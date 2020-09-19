@@ -1,0 +1,6 @@
+*.tmp
+build*
+install*
+devel*
+.history*
+.catkin_workspace
