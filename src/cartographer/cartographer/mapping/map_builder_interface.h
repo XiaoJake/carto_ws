@@ -139,7 +139,7 @@ class MapBuilderInterface {
    * @brief 从一个 proto 流中加载 SLAM 状态，返回一个trajectory_ids
    * @param[in] reader 
    * @param[in] load_frozen_state */
-  // @return std::map<int /* trajectory id in proto */, int /* trajectory id */> 
+  // @return std::map<int(trajectory id in proto), int(trajectory id)> 
  
   virtual std::map<int /* trajectory id in proto */, int /* trajectory id */>
   LoadState(io::ProtoStreamReaderInterface* reader, bool load_frozen_state) = 0;
@@ -149,8 +149,8 @@ class MapBuilderInterface {
   /**
    * @brief 从一个 文件流中加载 SLAM 状态，返回一个trajectory_ids
    * @param[in] filename 
-   * @param[in] load_frozen_state 
-  // @return std::map<int /* trajectory id in proto */, int /* trajectory id */> 
+   * @param[in] load_frozen_state */
+  // @return std::map<int(trajectory id in proto), int(trajectory id)> 
  
   virtual std::map<int /* trajectory id in proto */, int /* trajectory id */>
   LoadStateFromFile(const std::string& filename, bool load_frozen_state) = 0;

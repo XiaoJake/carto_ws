@@ -6,10 +6,14 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "/home/xiaojake/carto_ws/install_isolated/include/**",
-                "/opt/ros/melodic/include/**",
+                "/home/xiaojake/carto_ws/src/cartographer/**",
+                "/home/xiaojake/carto_ws/src/cartographer/cartographer/**",
+                "/home/xiaojake/carto_ws/src/cartographer_ros/**",
+                "/home/xiaojake/carto_ws/src/cartographer_ros/cartographer_ros/**",
+                "/home/xiaojake/carto_ws/src/cartographer_ros/cartographer_ros/cartographer_ros/**",
                 "/home/xiaojake/others_ws/src/map_server/include/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "/opt/ros/melodic/include/**"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
