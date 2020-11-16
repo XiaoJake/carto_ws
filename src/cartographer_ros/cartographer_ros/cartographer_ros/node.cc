@@ -114,7 +114,7 @@ Node::Node(
       node_handle_.advertise<::visualization_msgs::MarkerArray>(
           kConstraintListTopic, kLatestOnlyPublisherQueueSize);
   /**
-   * @brief server¶Ôrequest×÷³öresponse,¸ù¾İServiceNameµ÷ÓÃ¾ßÌåµÄº¯Êı¾ä±ú´¦Àí
+   * @brief serverå¯¹requestä½œå‡ºresponse,æ ¹æ®ServiceNameè°ƒç”¨å…·ä½“çš„å‡½æ•°å¥æŸ„å¤„ç†
    */
   service_servers_.push_back(node_handle_.advertiseService(
       kSubmapQueryServiceName, &Node::HandleSubmapQuery, this));
@@ -130,7 +130,7 @@ Node::Node(
       kGetTrajectoryStatesServiceName, &Node::HandleGetTrajectoryStates, this));
   service_servers_.push_back(node_handle_.advertiseService(
       kReadMetricsServiceName, &Node::HandleReadMetrics, this));
-  // Æ¥ÅäÉÏµÄµãÔÆ
+  // åŒ¹é…ä¸Šçš„ç‚¹äº‘
   scan_matched_point_cloud_publisher_ =
       node_handle_.advertise<sensor_msgs::PointCloud2>(
           kScanMatchedPointCloudTopic, kLatestOnlyPublisherQueueSize);
@@ -154,18 +154,18 @@ Node::Node(
       &Node::PublishConstraintList, this));
 }
 /**
- * @brief Îö¹¹º¯ÊıÔÚNodeÏú»ÙÇ°µ÷ÓÃFinishAllTrajectories()
+ * @brief ææ„å‡½æ•°åœ¨Nodeé”€æ¯å‰è°ƒç”¨FinishAllTrajectories()
  */
 Node::~Node() { FinishAllTrajectories(); }
 
 /**
- * @brief ÔÚNodeÖĞ¶Ôµ÷ÓÃ::ros::NodeHandle*ÓÖ½øĞĞÁËÒ»´Î·â×°,ÓÃÔÚoffline_nodeÖĞ
- * @return node_handle_: ros::NodeHandleÀàĞÍµÄÖ¸Õë
+ * @brief åœ¨Nodeä¸­å¯¹è°ƒç”¨::ros::NodeHandle*åˆè¿›è¡Œäº†ä¸€æ¬¡å°è£…,ç”¨åœ¨offline_nodeä¸­
+ * @return node_handle_: ros::NodeHandleç±»å‹çš„æŒ‡é’ˆ
  */
 ::ros::NodeHandle* Node::node_handle() { return &node_handle_; }
 
 /**
- * @brief serviceµÄÊµ¼Ê´¦ÀíÊÇµ÷ÓÃmap_builder_bridge_µÄHandleSubmapQuery()
+ * @brief serviceçš„å®é™…å¤„ç†æ˜¯è°ƒç”¨map_builder_bridge_çš„HandleSubmapQuery()
  * @param request
  * @param response
  * @return
@@ -200,7 +200,7 @@ void Node::PublishSubmapList(const ::ros::WallTimerEvent& unused_timer_event) {
   submap_list_publisher_.publish(map_builder_bridge_.GetSubmapList());
 }
 /**
- * @brief Î»×Ë¹À¼Æ,µ÷ÓÃ::cartographer::mapping::PoseExtrapolator
+ * @brief ä½å§¿ä¼°è®¡,è°ƒç”¨::cartographer::mapping::PoseExtrapolator
  * @param trajectory_id
  * @param options
  */
@@ -214,7 +214,7 @@ void Node::AddExtrapolator(const int trajectory_id,
                 .imu_gravity_time_constant()
           : options.trajectory_builder_options.trajectory_builder_2d_options()
                 .imu_gravity_time_constant();
-  // ÎªÁË²»´´½¨ÁÙÊ±¸±±¾,Í¬Ê±piecewise_construct½â¾ömapÀà´«Öµ·Ö²»ÇåkeyºÍvalueµÄÎÊÌâ
+  // ä¸ºäº†ä¸åˆ›å»ºä¸´æ—¶å‰¯æœ¬,åŒæ—¶piecewise_constructè§£å†³mapç±»ä¼ å€¼åˆ†ä¸æ¸…keyå’Œvalueçš„é—®é¢˜
   extrapolators_.emplace(
       std::piecewise_construct, std::forward_as_tuple(trajectory_id),
       std::forward_as_tuple(
@@ -222,7 +222,7 @@ void Node::AddExtrapolator(const int trajectory_id,
           gravity_time_constant));
 }
 /**
- * @brief ¸÷¸ö´«¸ĞÆ÷µÄ²ÉÑùËÙÂÊ
+ * @brief å„ä¸ªä¼ æ„Ÿå™¨çš„é‡‡æ ·é€Ÿç‡
  * @param trajectory_id
  * @param options
  */
@@ -237,8 +237,8 @@ void Node::AddSensorSamplers(const int trajectory_id,
           options.landmarks_sampling_ratio));
 }
 /**
- * @brief ËÄ¸öpublisher,µ÷ÓÃmap_builder_bridge_µÄgetXXX()º¯Êı´¦Àí
- * @brief Node,Landmark,ConstraintµÄ·¢²¼º¯Êı±È½Ï¼òµ¥,PublishTrajectoryStates·Ç³£ÖØÒª
+ * brief å››ä¸ªpublisher,è°ƒç”¨map_builder_bridge_çš„getXXX()å‡½æ•°å¤„ç†
+ * @brief Node,Landmark,Constraintçš„å‘å¸ƒå‡½æ•°æ¯”è¾ƒç®€å•,PublishTrajectoryStateséå¸¸é‡è¦
  * @param timer_event
  */
 void Node::PublishLocalTrajectoryData(const ::ros::TimerEvent& timer_event) {
@@ -356,7 +356,7 @@ void Node::PublishConstraintList(
   }
 }
 /**
- * @brief ¸ù¾İÊäÈëµÄsensorÀàĞÍºÍÊıÁ¿,¼ÆËã³öÎ¨Ò»ÓĞĞ§µÄtopic name
+ * @brief æ ¹æ®è¾“å…¥çš„sensorç±»å‹å’Œæ•°é‡,è®¡ç®—å‡ºå”¯ä¸€æœ‰æ•ˆçš„topic name
  * @param options
  * @param topics
  * @return a set of SensorID
@@ -404,8 +404,8 @@ Node::ComputeExpectedSensorIds(const TrajectoryOptions& options) const {
 }
 
 /**
- * @brief Óëstart trajectoryÏà¹ØµÄº¯ÊıÊµ¼Êµ÷ÓÃ´Ëº¯Êı½øĞĞ´¦Àí,¸Ãº¯ÊıÖ¸Ïòmap_builder_bridge_
- * @brief trajectoryÊÇÉÏ²ã¸ÅÄî,ËùÒÔ»¹µ÷ÓÃÁËAddExtrapolator,LaunchSubscribers,AddSensorSamplersµÈ
+ * @brief ä¸start trajectoryç›¸å…³çš„å‡½æ•°å®é™…è°ƒç”¨æ­¤å‡½æ•°è¿›è¡Œå¤„ç†,è¯¥å‡½æ•°æŒ‡å‘map_builder_bridge_
+ * @brief trajectoryæ˜¯ä¸Šå±‚æ¦‚å¿µ,æ‰€ä»¥è¿˜è°ƒç”¨äº†AddExtrapolator,LaunchSubscribers,AddSensorSamplersç­‰
  * @param options
  * @param topics
  * @return
@@ -427,9 +427,9 @@ int Node::AddTrajectory(const TrajectoryOptions& options) {
   return trajectory_id;
 }
 /**
- * @brief ¶Ô¶à¸öÖØ¸´topic£¬×Ô¶¯¼Ó"_"ºÍÊı×Ö±£Ö¤Î¨Ò»¡£
- * @brief µ÷ÓÃSubscribeWithHandlerÊµ¼Ê´¦ÀísensorÊı¾İ
- * @brief ¶ÔÓÚSensorBridgeÖĞµÄ¶à¸öHandleXXXMessage,ĞèÒªÔÚnode.ccÖĞµ÷ÓÃ´Ëº¯Êı²ÅÖ´ĞĞ
+ * @brief å¯¹å¤šä¸ªé‡å¤topicï¼Œè‡ªåŠ¨åŠ "_"å’Œæ•°å­—ä¿è¯å”¯ä¸€ã€‚
+ * @brief è°ƒç”¨SubscribeWithHandlerå®é™…å¤„ç†sensoræ•°æ®
+ * @brief å¯¹äºSensorBridgeä¸­çš„å¤šä¸ªHandleXXXMessage,éœ€è¦åœ¨node.ccä¸­è°ƒç”¨æ­¤å‡½æ•°æ‰æ‰§è¡Œ
  * @param options
  * @param topics
  * @param trajectory_id
@@ -497,7 +497,7 @@ void Node::LaunchSubscribers(const TrajectoryOptions& options,
   }
 }
 
-// ¿´ÔÚluaÀïÃæ¸øÁË2D»¹ÊÇ3DµÄÉèÖÃ
+// çœ‹åœ¨luaé‡Œé¢ç»™äº†2Dè¿˜æ˜¯3Dçš„è®¾ç½®
 bool Node::ValidateTrajectoryOptions(const TrajectoryOptions& options) {
   if (node_options_.map_builder_options.use_trajectory_builder_2d()) {
     return options.trajectory_builder_options
@@ -582,7 +582,7 @@ cartographer_ros_msgs::StatusResponse Node::FinishTrajectoryUnderLock(
 }
 
 /**
- * @brief µ÷ÓÃAddTrajectoryÊµ¼Ê´¦Àí
+ * @brief è°ƒç”¨AddTrajectoryå®é™…å¤„ç†
  * @param request
  * @param response
  * @return
@@ -645,7 +645,7 @@ bool Node::HandleStartTrajectory(
 }
 
 /**
- * @brief Ö±½ÓÔÚnode_main.ccÖĞµ÷ÓÃ,º¯ÊıÖĞ¼ÌĞøµ÷ÓÃAddTrajectory´¦Àí,²ÉÓÃÄ¬ÈÏ´«¸ĞÆ÷»°Ìâ
+ * @brief ç›´æ¥åœ¨node_main.ccä¸­è°ƒç”¨,å‡½æ•°ä¸­ç»§ç»­è°ƒç”¨AddTrajectoryå¤„ç†,é‡‡ç”¨é»˜è®¤ä¼ æ„Ÿå™¨è¯é¢˜
  * @param options
  */
 void Node::StartTrajectoryWithDefaultTopics(const TrajectoryOptions& options) {
@@ -654,7 +654,7 @@ void Node::StartTrajectoryWithDefaultTopics(const TrajectoryOptions& options) {
   AddTrajectory(options);
 }
 /**
- * @brief Í¬Ê±´¦Àí¶à¸öbag°ü,offline_node.cc
+ * @brief åŒæ—¶å¤„ç†å¤šä¸ªbagåŒ…,offline_node.cc
  * @param bags_options
  * @return
  */
@@ -730,7 +730,7 @@ bool Node::HandleFinishTrajectory(
   return true;
 }
 /**
- * @brief serviceµÄÊµ¼Ê´¦ÀíÊÇµ÷ÓÃmap_builder_bridge_µÄSerializeState±£´æµØÍ¼
+ * @brief serviceçš„å®é™…å¤„ç†æ˜¯è°ƒç”¨map_builder_bridge_çš„SerializeStateä¿å­˜åœ°å›¾
  * @param request
  * @param response
  * @return
@@ -780,8 +780,8 @@ void Node::FinishAllTrajectories() {
 }
 
 /**
- * @brief µ÷ÓÃFinishTrajectoryUnderLock½áÊøËùÓĞ¹ì¼£
- * @brief ×¢ÒâÇø±ğFinishTrajectory(ÌØ¶¨¹ì¼£)
+ * @brief è°ƒç”¨FinishTrajectoryUnderLockç»“æŸæ‰€æœ‰è½¨è¿¹
+ * @brief æ³¨æ„åŒºåˆ«FinishTrajectory(ç‰¹å®šè½¨è¿¹)
  */
 bool Node::FinishTrajectory(const int trajectory_id) {
   absl::MutexLock lock(&mutex_);
@@ -790,8 +790,8 @@ bool Node::FinishTrajectory(const int trajectory_id) {
 }
 
 /**
- * @brief Ö±½ÓÔÚnode_main.ccµ÷ÓÃ,¼ÌĞøµ÷ÓÃmap_builder_bridge_µÄRunFinalOptimization()
- * @brief ½áÊø³ÌĞòÇ°×îºóÓÅ»¯Ò»´ÎËùÓĞ¹ì¼£ÓÅ»¯
+ * @brief ç›´æ¥åœ¨node_main.ccè°ƒç”¨,ç»§ç»­è°ƒç”¨map_builder_bridge_çš„RunFinalOptimization()
+ * @brief ç»“æŸç¨‹åºå‰æœ€åä¼˜åŒ–ä¸€æ¬¡æ‰€æœ‰è½¨è¿¹ä¼˜åŒ–
  */
 void Node::RunFinalOptimization() {
   {
@@ -814,8 +814,8 @@ void Node::RunFinalOptimization() {
 }
 
 /**
- * @brief ÒÔÏÂÆß¸öHandleXXXMessage()º¯Êı,¶¨ÒåÁËËùÓĞ´«¸ĞÆ÷Êı¾İ´¦ÀíµÄ½Ó¿Ú
- * @brief ÊÇÒ»²ã·â×°,Êµ¼ÊÊÇµ÷ÓÃÁËMapBuilderBridge,ÓÖµ÷ÓÃÆäÖĞµÄSensorBridge
+ * @brief ä»¥ä¸‹ä¸ƒä¸ªHandleXXXMessage()å‡½æ•°,å®šä¹‰äº†æ‰€æœ‰ä¼ æ„Ÿå™¨æ•°æ®å¤„ç†çš„æ¥å£
+ * @brief æ˜¯ä¸€å±‚å°è£…,å®é™…æ˜¯è°ƒç”¨äº†MapBuilderBridge,åˆè°ƒç”¨å…¶ä¸­çš„SensorBridge
  * @param trajectory_id
  * @param sensor_id
  * @param msg
@@ -905,7 +905,7 @@ void Node::HandlePointCloud2Message(
       ->HandlePointCloud2Message(sensor_id, msg);
 }
 
-// µØÍ¼´æÈëÓ²ÅÌ
+// åœ°å›¾å­˜å…¥ç¡¬ç›˜
 void Node::SerializeState(const std::string& filename,
                           const bool include_unfinished_submaps) {
   absl::MutexLock lock(&mutex_);
@@ -913,7 +913,7 @@ void Node::SerializeState(const std::string& filename,
       map_builder_bridge_.SerializeState(filename, include_unfinished_submaps))
       << "Could not write state.";
 }
-// ¼ÓÔØµØÍ¼ÇÒÈ·ÈÏµØÍ¼ÊÇ·ñ¸üĞÂ
+// åŠ è½½åœ°å›¾ä¸”ç¡®è®¤åœ°å›¾æ˜¯å¦æ›´æ–°
 void Node::LoadState(const std::string& state_filename,
                      const bool load_frozen_state) {
   absl::MutexLock lock(&mutex_);

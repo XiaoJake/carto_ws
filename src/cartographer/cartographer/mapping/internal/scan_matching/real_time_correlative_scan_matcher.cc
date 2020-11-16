@@ -8,13 +8,13 @@ proto::RealTimeCorrelativeScanMatcherOptions
 CreateRealTimeCorrelativeScanMatcherOptions(
     common::LuaParameterDictionary* const parameter_dictionary) {
   proto::RealTimeCorrelativeScanMatcherOptions options;
-  // ÏßÐÔËÑË÷´°¿Ú
+  // çº¿æ€§æœç´¢çª—å£
   options.set_linear_search_window(
       parameter_dictionary->GetDouble("linear_search_window"));
-  // ½Ç¶ÈËÑË÷´°¿Ú
+  // è§’åº¦æœç´¢çª—å£
   options.set_angular_search_window(
       parameter_dictionary->GetDouble("angular_search_window"));
-  //Çó½âµÃ·ÖµÄÁ½¸öÈ¨ÖØ
+  //æ±‚è§£å¾—åˆ†çš„ä¸¤ä¸ªæƒé‡
   options.set_translation_delta_cost_weight(
       parameter_dictionary->GetDouble("translation_delta_cost_weight"));
   options.set_rotation_delta_cost_weight(

@@ -27,7 +27,7 @@ namespace mapping {
 struct YawOnlyQuaternionPlus {
   template <typename T>
   bool operator()(const T* x, const T* delta, T* x_plus_delta) const {
-      ///common::Clamp(a,min,max) ½«aµÄÖµÏŞ¶¨ÔÚmin,max·¶Î§ÄÚ
+      ///common::Clamp(a,min,max) å°†açš„å€¼é™å®šåœ¨min,maxèŒƒå›´å†…
     const T clamped_delta = common::Clamp(delta[0], T(-0.5), T(0.5));
     T q_delta[4];
     q_delta[0] = ceres::sqrt(1. - clamped_delta * clamped_delta);

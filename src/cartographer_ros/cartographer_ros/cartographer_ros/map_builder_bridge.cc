@@ -27,7 +27,7 @@
 #include "cartographer_ros_msgs/StatusResponse.h"
 
 namespace cartographer_ros {
-    // ¿ÉÊÓ»¯Ïà¹Ø
+    // å¯è§†åŒ–ç›¸å…³
 namespace {
 
 using ::cartographer::transform::Rigid3d;
@@ -98,8 +98,8 @@ void PushAndResetLineMarker(visualization_msgs::Marker* marker,
 
 }  // namespace
 /**
- * @brief ¹¹Ôìº¯ÊıÎª¿Õ,½ö´´½¨ÁËÒ»¸öMapBuilderInterfaceµÄÊµÀı,ÆäÓÖÊÇMapBuilderµÄ½Ó¿Ú
- * @brief Òò´Ë´´½¨MapBuilderBridge,¾Í´´½¨ÁËMapBuilder
+ * @brief æ„é€ å‡½æ•°ä¸ºç©º,ä»…åˆ›å»ºäº†ä¸€ä¸ªMapBuilderInterfaceçš„å®ä¾‹,å…¶åˆæ˜¯MapBuilderçš„æ¥å£
+ * @brief å› æ­¤åˆ›å»ºMapBuilderBridge,å°±åˆ›å»ºäº†MapBuilder
  * @param node_options
  * @param map_builder
  * @param tf_buffer
@@ -112,7 +112,7 @@ MapBuilderBridge::MapBuilderBridge(
       map_builder_(std::move(map_builder)),
       tf_buffer_(tf_buffer) {}
     /**
-     * @brief ¼ÓÔØÀúÊ·µØÍ¼,µ÷ÓÃmap_builderµÄLoadState()º¯Êı
+     * @brief åŠ è½½å†å²åœ°å›¾,è°ƒç”¨map_builderçš„LoadState()å‡½æ•°
      * @param state_filename
      * @param load_frozen_state
      */
@@ -130,7 +130,7 @@ void MapBuilderBridge::LoadState(const std::string& state_filename,
   map_builder_->LoadState(&stream, load_frozen_state);
 }
 /**
- * @brief Ìí¼Ó¹ì¼£,µ÷ÓÃmap_builderµÄAddTrajectoryBuilder()&GetTrajectoryBuilder()º¯Êı
+ * @brief æ·»åŠ è½¨è¿¹,è°ƒç”¨map_builderçš„AddTrajectoryBuilder()&GetTrajectoryBuilder()å‡½æ•°
  * @param expected_sensor_ids
  * @param trajectory_options
  * @return
@@ -164,7 +164,7 @@ int MapBuilderBridge::AddTrajectory(
   return trajectory_id;
 }
 /**
- * @brief ½áÊø¹ì¼£,µ÷ÓÃmap_builderµÄFinishTrajectory()
+ * @brief ç»“æŸè½¨è¿¹,è°ƒç”¨map_builderçš„FinishTrajectory()
  * @param trajectory_id
  */
 void MapBuilderBridge::FinishTrajectory(const int trajectory_id) {
@@ -176,8 +176,8 @@ void MapBuilderBridge::FinishTrajectory(const int trajectory_id) {
   sensor_bridges_.erase(trajectory_id);
 }
 /**
- * @brief µ÷ÓÃmap_builderµÄpose_graph()µÄRunFinalOptimization()
- * @brief ¿ÉÒÔ¿´µ½,µ÷ÓÃ¹ØÏµÒ»²ãÌ×Ò»²ã
+ * @brief è°ƒç”¨map_builderçš„pose_graph()çš„RunFinalOptimization()
+ * @brief å¯ä»¥çœ‹åˆ°,è°ƒç”¨å…³ç³»ä¸€å±‚å¥—ä¸€å±‚
  */
 void MapBuilderBridge::RunFinalOptimization() {
   LOG(INFO) << "Running final trajectory optimization...";
@@ -190,7 +190,7 @@ bool MapBuilderBridge::SerializeState(const std::string& filename,
                                             filename);
 }
 /**
- * @brief µ÷ÓÃmap_builder_µÄSubmapToProto()º¯Êı²éÑ¯Ä³¸ö¹ì¼£µÄÄ³¸ö×ÓÍ¼,½á¹û·µ»ØÖÁresponse
+ * @brief è°ƒç”¨map_builder_çš„SubmapToProto()å‡½æ•°æŸ¥è¯¢æŸä¸ªè½¨è¿¹çš„æŸä¸ªå­å›¾,ç»“æœè¿”å›è‡³response
  * @param request
  * @param response
  */
@@ -550,7 +550,7 @@ SensorBridge* MapBuilderBridge::sensor_bridge(const int trajectory_id) {
   return sensor_bridges_.at(trajectory_id).get();
 }
 /**
- * @brief ²åÈëslam½á¹û,°üº¬submap,constraint,pose,range dataµÈ
+ * @brief æ’å…¥slamç»“æœ,åŒ…å«submap,constraint,pose,range dataç­‰
  * @param trajectory_id
  * @param time
  * @param local_pose

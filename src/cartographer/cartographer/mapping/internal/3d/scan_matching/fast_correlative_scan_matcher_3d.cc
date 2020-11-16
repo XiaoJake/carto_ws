@@ -37,18 +37,18 @@ proto::FastCorrelativeScanMatcherOptions3D
 CreateFastCorrelativeScanMatcherOptions3D(
     common::LuaParameterDictionary* const parameter_dictionary) {
   proto::FastCorrelativeScanMatcherOptions3D options;
-  ///Ê¹ÓÃ¼¸²ãÉî¶È Ò»°ãÊÇ8
+  ///ä½¿ç”¨å‡ å±‚æ·±åº¦ ä¸€èˆ¬æ˜¯8
   options.set_branch_and_bound_depth(
       parameter_dictionary->GetInt("branch_and_bound_depth"));
-  ///±£Ö¤Ô­Ê¼·Ö±æÂÊµÄ²ãÊı Ò»°ãÊÇ3
+  ///ä¿è¯åŸå§‹åˆ†è¾¨ç‡çš„å±‚æ•° ä¸€èˆ¬æ˜¯3
   options.set_full_resolution_depth(
       parameter_dictionary->GetInt("full_resolution_depth"));
-  ///Á½¸öµãÔÆÖ±·½Í¼Æ¥ÅäÒªÇóµÄ×îĞ¡µÃ·Ö
+  ///ä¸¤ä¸ªç‚¹äº‘ç›´æ–¹å›¾åŒ¹é…è¦æ±‚çš„æœ€å°å¾—åˆ†
   options.set_min_rotational_score(
       parameter_dictionary->GetDouble("min_rotational_score"));
   options.set_min_low_resolution_score(
       parameter_dictionary->GetDouble("min_low_resolution_score"));
-  ///ËÑË÷´°¿Ú´óĞ¡
+  ///æœç´¢çª—å£å¤§å°
   options.set_linear_xy_search_window(
       parameter_dictionary->GetDouble("linear_xy_search_window"));
   options.set_linear_z_search_window(
@@ -59,30 +59,30 @@ CreateFastCorrelativeScanMatcherOptions3D(
 }
 
 /*
- * ÕâÀïÊ¹ÓÃµÄ½µ²ÉÑùÍø¸ñ,ÆäÕ¼ÓÃµÄ´¢´æ¿Õ¼äÒÀÈ»ºÍÔ­Ê¼Íø¸ñÏàÍ¬,ËùÒÔ¹¹ÔìÊ¹ÓÃµÄ·Ö±æÂÊÊÇÒ»ÑùµÄ.
- * Ö»ÊÇÔÚÄ³Ò»Éî¶ÈdepthÏÂ,±ß³¤Îª2^depth´¢´æµ¥ÔªµÄÕı·½ĞÎ´¢´æ¿Õ¼äÄÚ,Ö»ÓĞÒ»¸öÓĞ0-255Êı¾İ
- * ÇÒ¸ÃÊı¾İ´¢´æÔÚÉÏÒ»Íø¸ñÖĞÊÓÎª(0,0,0)µÄÎ»ÖÃ,ÆäËûÆß¸öÎ»ÖÃÃ»ÓĞÊı¾İ µü´úÆ÷ÔÚµü´úµÄÊ±ºò»á×Ô¶¯Ìø¹ı
- * Èç¹ûÉèÖÃÍø¸ñ½µ²ÉÑù ÔòĞèÒª°Ñ3DĞòºÅ³ıÒÔ2
+ * è¿™é‡Œä½¿ç”¨çš„é™é‡‡æ ·ç½‘æ ¼,å…¶å ç”¨çš„å‚¨å­˜ç©ºé—´ä¾ç„¶å’ŒåŸå§‹ç½‘æ ¼ç›¸åŒ,æ‰€ä»¥æ„é€ ä½¿ç”¨çš„åˆ†è¾¨ç‡æ˜¯ä¸€æ ·çš„.
+ * åªæ˜¯åœ¨æŸä¸€æ·±åº¦depthä¸‹,è¾¹é•¿ä¸º2^depthå‚¨å­˜å•å…ƒçš„æ­£æ–¹å½¢å‚¨å­˜ç©ºé—´å†…,åªæœ‰ä¸€ä¸ªæœ‰0-255æ•°æ®
+ * ä¸”è¯¥æ•°æ®å‚¨å­˜åœ¨ä¸Šä¸€ç½‘æ ¼ä¸­è§†ä¸º(0,0,0)çš„ä½ç½®,å…¶ä»–ä¸ƒä¸ªä½ç½®æ²¡æœ‰æ•°æ® è¿­ä»£å™¨åœ¨è¿­ä»£çš„æ—¶å€™ä¼šè‡ªåŠ¨è·³è¿‡
+ * å¦‚æœè®¾ç½®ç½‘æ ¼é™é‡‡æ · åˆ™éœ€è¦æŠŠ3Dåºå·é™¤ä»¥2
  */
 
-///ÊäÈë: ¸ÅÂÊ¸ñÕ¤µØÍ¼ ÅäÖÃ
-///½«¸ÅÂÊ¸ñÕ¤µØÍ¼×ª»¯Îª0-255µÃ·ÖµØÍ¼
+///è¾“å…¥: æ¦‚ç‡æ ¼æ …åœ°å›¾ é…ç½®
+///å°†æ¦‚ç‡æ ¼æ …åœ°å›¾è½¬åŒ–ä¸º0-255å¾—åˆ†åœ°å›¾
 PrecomputationGridStack3D::PrecomputationGridStack3D(
     const HybridGrid& hybrid_grid,
     const proto::FastCorrelativeScanMatcherOptions3D& options) {
   CHECK_GE(options.branch_and_bound_depth(), 1);
   CHECK_GE(options.full_resolution_depth(), 1);
-  ///0-255ÀëÉ¢µØÍ¼ÁĞ±íµÄµÚÒ»¸öµØÍ¼ÊÇ¸ÅÂÊµØÍ¼µÄ0-255µØÍ¼
+  ///0-255ç¦»æ•£åœ°å›¾åˆ—è¡¨çš„ç¬¬ä¸€ä¸ªåœ°å›¾æ˜¯æ¦‚ç‡åœ°å›¾çš„0-255åœ°å›¾
   precomputation_grids_.reserve(options.branch_and_bound_depth());
   precomputation_grids_.push_back(ConvertToPrecomputationGrid(hybrid_grid));
   Eigen::Array3i last_width = Eigen::Array3i::Ones();
   for (int depth = 1; depth != options.branch_and_bound_depth(); ++depth) {
-    const bool half_resolution = depth >= options.full_resolution_depth(); ///ÊÇ·ñ½µµÍ·Ö±æÂÊ
-    ///depthµÈÓÚ3 next_width = (8,8,8)Íø¸ñ
-    const Eigen::Array3i next_width = ((1 << depth) * Eigen::Array3i::Ones()); ///¸ÃÉî¶ÈÍø¸ñ´óĞ¡
-    const int full_voxels_per_high_resolution_voxel = ///Ã¿¸öÍø¸ñµÄ·Ö±æÂÊ
+    const bool half_resolution = depth >= options.full_resolution_depth(); ///æ˜¯å¦é™ä½åˆ†è¾¨ç‡
+    ///depthç­‰äº3 next_width = (8,8,8)ç½‘æ ¼
+    const Eigen::Array3i next_width = ((1 << depth) * Eigen::Array3i::Ones()); ///è¯¥æ·±åº¦ç½‘æ ¼å¤§å°
+    const int full_voxels_per_high_resolution_voxel = ///æ¯ä¸ªç½‘æ ¼çš„åˆ†è¾¨ç‡
         1 << std::max(0, depth - options.full_resolution_depth());
-    ///¸ù¾İÉî¶ÈºÍ·Ö±æÂÊ ¼ÆËãµ±Ç°Íø¸ñ(0,0,0)-(1,1,1)Íø¸ñµÄÎ»ÒÆ´óĞ¡
+    ///æ ¹æ®æ·±åº¦å’Œåˆ†è¾¨ç‡ è®¡ç®—å½“å‰ç½‘æ ¼(0,0,0)-(1,1,1)ç½‘æ ¼çš„ä½ç§»å¤§å°
     const Eigen::Array3i shift = (next_width - last_width +
                                   (full_voxels_per_high_resolution_voxel - 1)) /
                                  full_voxels_per_high_resolution_voxel;
@@ -92,15 +92,15 @@ PrecomputationGridStack3D::PrecomputationGridStack3D(
   }
 }
 
-///ÀëÉ¢ºóµÄµãÔÆ
+///ç¦»æ•£åçš„ç‚¹äº‘
 struct DiscreteScan3D {
-  transform::Rigid3f pose; ///µ±Ç°Ö¡Ïà¶ÔÉÏÒ»Ö¡¿ÉÄÜµÄÎ»×Ë±ä»»
+  transform::Rigid3f pose; ///å½“å‰å¸§ç›¸å¯¹ä¸Šä¸€å¸§å¯èƒ½çš„ä½å§¿å˜æ¢
   // Contains a vector of discretized scans for each 'depth'.
-  std::vector<std::vector<Eigen::Array3i>> cell_indices_per_depth; ///µãÔÆÖĞµÄµãÔÚÃ¿Ò»¸öÉî¶È0-255µØÍ¼ÖĞµÄ3DĞòºÅ
-  float rotational_score; ///Ğı×ªµÃ·Ö
+  std::vector<std::vector<Eigen::Array3i>> cell_indices_per_depth; ///ç‚¹äº‘ä¸­çš„ç‚¹åœ¨æ¯ä¸€ä¸ªæ·±åº¦0-255åœ°å›¾ä¸­çš„3Dåºå·
+  float rotational_score; ///æ—‹è½¬å¾—åˆ†
 };
 
-///ºòÑ¡Î»×Ë
+///å€™é€‰ä½å§¿
 struct Candidate3D {
   Candidate3D(const int scan_index, const Eigen::Array3i& offset)
       : scan_index(scan_index), offset(offset) {}
@@ -110,27 +110,27 @@ struct Candidate3D {
   }
 
   // Index into the discrete scans vectors.
-  int scan_index; ///Ö±·½Í¼Æ¥Åä³É¹¦µÄÀëÉ¢µãÔÆ Ò»Î¬ĞòºÅ ±íÊ¾µÚ¼¸¸öĞı×ª
+  int scan_index; ///ç›´æ–¹å›¾åŒ¹é…æˆåŠŸçš„ç¦»æ•£ç‚¹äº‘ ä¸€ç»´åºå· è¡¨ç¤ºç¬¬å‡ ä¸ªæ—‹è½¬
 
   // Linear offset from the initial pose in cell indices. For lower resolution
   // candidates this is the lowest offset of the 2^depth x 2^depth x 2^depth
   // block of possibilities.
-  //µ¥Ôª¸ñË÷ÒıÖĞÓë³õÊ¼×ËÊÆµÄÏßĞÔÆ«ÒÆ¡£¶ÔÓÚµÍ·Ö±æÂÊºòÑ¡£¬ÕâÊÇ2^depth x 2^depth x 2^depth¿é¿ÉÄÜĞÔµÄ×îĞ¡Æ«ÒÆÁ¿¡£
-  Eigen::Array3i offset; ///ÏßĞÔËÑË÷Æ«ÒÆ
+  //å•å…ƒæ ¼ç´¢å¼•ä¸­ä¸åˆå§‹å§¿åŠ¿çš„çº¿æ€§åç§»ã€‚å¯¹äºä½åˆ†è¾¨ç‡å€™é€‰ï¼Œè¿™æ˜¯2^depth x 2^depth x 2^depthå—å¯èƒ½æ€§çš„æœ€å°åç§»é‡ã€‚
+  Eigen::Array3i offset; ///çº¿æ€§æœç´¢åç§»
 
   // Score, higher is better.
-  // ·µ»ØÌØÊâÖµ¡°ÕıÎŞÇî´ó¡±£¬ÓÉ¸¡µãÀàĞÍT±íÊ¾¡£
-  // ½öµ±std£º£ºnumeric_limits<T>£º£ºhas_infinity==trueÊ±²ÅÓĞÒâÒå¡£
+  // è¿”å›ç‰¹æ®Šå€¼â€œæ­£æ— ç©·å¤§â€ï¼Œç”±æµ®ç‚¹ç±»å‹Tè¡¨ç¤ºã€‚
+  // ä»…å½“stdï¼šï¼šnumeric_limits<T>ï¼šï¼šhas_infinity==trueæ—¶æ‰æœ‰æ„ä¹‰ã€‚
   float score = -std::numeric_limits<float>::infinity();
 
   // Score of the low resolution matcher.
-  float low_resolution_score = 0.f; ///¸ÃºòÑ¡Î»×ËÔÚµÍ·Ö±æÂÊºÍ¾Ö²¿µØÍ¼µÄÆ¥ÅäµÃ·Ö
+  float low_resolution_score = 0.f; ///è¯¥å€™é€‰ä½å§¿åœ¨ä½åˆ†è¾¨ç‡å’Œå±€éƒ¨åœ°å›¾çš„åŒ¹é…å¾—åˆ†
 
   bool operator<(const Candidate3D& other) const { return score < other.score; }
   bool operator>(const Candidate3D& other) const { return score > other.score; }
 };
 
-///¸ñÕ¤ µÍ·Ö±æÂÊ¸ñÕ¤ Ğı×ªÉ¨ÃèÆ¥ÅäÖ±·½Í¼ ÅäÖÃ
+///æ ¼æ … ä½åˆ†è¾¨ç‡æ ¼æ … æ—‹è½¬æ‰«æåŒ¹é…ç›´æ–¹å›¾ é…ç½®
 FastCorrelativeScanMatcher3D::FastCorrelativeScanMatcher3D(
     const HybridGrid& hybrid_grid,
     const HybridGrid* const low_resolution_hybrid_grid,
@@ -140,27 +140,27 @@ FastCorrelativeScanMatcher3D::FastCorrelativeScanMatcher3D(
       resolution_(hybrid_grid.resolution()),
       width_in_voxels_(hybrid_grid.grid_size()),
       precomputation_grid_stack_(
-          absl::make_unique<PrecomputationGridStack3D>(hybrid_grid, options)), //ÓÃhybrid_grid, options¹¹ÔìµÄÖ¸Õë
+          absl::make_unique<PrecomputationGridStack3D>(hybrid_grid, options)), //ç”¨hybrid_grid, optionsæ„é€ çš„æŒ‡é’ˆ
       low_resolution_hybrid_grid_(low_resolution_hybrid_grid),
       rotational_scan_matcher_(rotational_scan_matcher_histogram) {}
 
 FastCorrelativeScanMatcher3D::~FastCorrelativeScanMatcher3D() {}
 
-///ÉÏÒ»Ö¡Î»×Ë ¾Ö²¿µØÍ¼Î»×Ë ³£Êı ¾Ö²¿¶¨Î»×îĞ¡µÃ·Ö
+///ä¸Šä¸€å¸§ä½å§¿ å±€éƒ¨åœ°å›¾ä½å§¿ å¸¸æ•° å±€éƒ¨å®šä½æœ€å°å¾—åˆ†
 std::unique_ptr<FastCorrelativeScanMatcher3D::Result>
 FastCorrelativeScanMatcher3D::Match(
     const transform::Rigid3d& global_node_pose,
     const transform::Rigid3d& global_submap_pose,
     const TrajectoryNode::Data& constant_data, const float min_score) const {
-    ///low_resolution_matcherÊÇĞÎ²ÎÊÇposeµÄº¯Êı
-    ///¸Ãº¯Êı: Ê¹ÓÃÎ»×Ë±ä»»µãÔÆÖĞµÄµã ²¢¶ÔÔÚµÍ·Ö±æÂÊÕ¤¸ñµØÍ¼ÏÂËùÓĞÓĞ¸ÅÂÊµÄµãÇóºÍ ×÷ÎªµÍ·Ö±æÂÊÆ¥ÅäµÃ·Ö
+    ///low_resolution_matcheræ˜¯å½¢å‚æ˜¯poseçš„å‡½æ•°
+    ///è¯¥å‡½æ•°: ä½¿ç”¨ä½å§¿å˜æ¢ç‚¹äº‘ä¸­çš„ç‚¹ å¹¶å¯¹åœ¨ä½åˆ†è¾¨ç‡æ …æ ¼åœ°å›¾ä¸‹æ‰€æœ‰æœ‰æ¦‚ç‡çš„ç‚¹æ±‚å’Œ ä½œä¸ºä½åˆ†è¾¨ç‡åŒ¹é…å¾—åˆ†
   const auto low_resolution_matcher = scan_matching::CreateLowResolutionMatcher(
       low_resolution_hybrid_grid_, &constant_data.low_resolution_point_cloud);
   const SearchParameters search_parameters{
       common::RoundToInt(options_.linear_xy_search_window() / resolution_),
       common::RoundToInt(options_.linear_z_search_window() / resolution_),
       options_.angular_search_window(), &low_resolution_matcher};
-  ///.cast<flaot>() Ç¿ÖÆÀàĞÍ×ª»»
+  ///.cast<flaot>() å¼ºåˆ¶ç±»å‹è½¬æ¢
   return MatchWithSearchParameters(
       search_parameters, global_node_pose.cast<float>(),
       global_submap_pose.cast<float>(),
@@ -195,7 +195,7 @@ FastCorrelativeScanMatcher3D::MatchFullSubmap(
       constant_data.gravity_alignment, min_score);
 }
 
-/////ËÑË÷²ÎÊı ÉÏÒ»Ö¡Î»×Ë ¾Ö²¿µØÍ¼Î»×Ë ¸ß·Ö±æÂÊµãÔÆ Ğı×ªÖ±·½Í¼ ÖØÁ¦·½Ïò ¾Ö²¿¶¨Î»×îĞ¡µÃ·Ö
+/////æœç´¢å‚æ•° ä¸Šä¸€å¸§ä½å§¿ å±€éƒ¨åœ°å›¾ä½å§¿ é«˜åˆ†è¾¨ç‡ç‚¹äº‘ æ—‹è½¬ç›´æ–¹å›¾ é‡åŠ›æ–¹å‘ å±€éƒ¨å®šä½æœ€å°å¾—åˆ†
 std::unique_ptr<FastCorrelativeScanMatcher3D::Result>
 FastCorrelativeScanMatcher3D::MatchWithSearchParameters(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
@@ -205,16 +205,16 @@ FastCorrelativeScanMatcher3D::MatchWithSearchParameters(
     const Eigen::VectorXf& rotational_scan_matcher_histogram,
     const Eigen::Quaterniond& gravity_alignment, const float min_score) const {
   const std::vector<DiscreteScan3D> discrete_scans = GenerateDiscreteScans(
-    ///ÕÒµ½Ö±·½Í¼Æ¥Åä¶È¸ßµÄ Ğı×ªÎ»×Ë±ä»»
-    ///Ã¿Ò»¸öÎ»×Ë¹¹ÔìÒ»¸öDiscreteScan3DÀà
+    ///æ‰¾åˆ°ç›´æ–¹å›¾åŒ¹é…åº¦é«˜çš„ æ—‹è½¬ä½å§¿å˜æ¢
+    ///æ¯ä¸€ä¸ªä½å§¿æ„é€ ä¸€ä¸ªDiscreteScan3Dç±»
       search_parameters, point_cloud, rotational_scan_matcher_histogram,
       gravity_alignment, global_node_pose, global_submap_pose);
 
-  ///ÕÒµ½µÍ·Ö±æÂÊÏÂµÄºòÑ¡Î»×Ë ²¢ÅÅĞò
+  ///æ‰¾åˆ°ä½åˆ†è¾¨ç‡ä¸‹çš„å€™é€‰ä½å§¿ å¹¶æ’åº
   const std::vector<Candidate3D> lowest_resolution_candidates =
       ComputeLowestResolutionCandidates(search_parameters, discrete_scans);
 
-  ///×îÓÅºòÑ¡Î»×Ë
+  ///æœ€ä¼˜å€™é€‰ä½å§¿
   const Candidate3D best_candidate = BranchAndBound(
       search_parameters, discrete_scans, lowest_resolution_candidates,
       precomputation_grid_stack_->max_depth(), min_score);
@@ -228,68 +228,68 @@ FastCorrelativeScanMatcher3D::MatchWithSearchParameters(
   return nullptr;
 }
 
-///ËÑË÷²ÎÊı µ±Ç°Ö¡µãÔÆ µ±Ç°Ö¡Ïà¶ÔÉÏÒ»Ö¡¿ÉÄÜµÄÎ»×Ë±ä»» µÃ·Ö
-///Çó³ö±ä»»ºóµãÔÆÔÚ0-255µØÍ¼ÖĞÃ¿¸öÉî¶ÈµÄÎ»ÖÃĞòºÅ ²¢¹¹ÔìÒ»¸öDiscreteScan3DÀà
+///æœç´¢å‚æ•° å½“å‰å¸§ç‚¹äº‘ å½“å‰å¸§ç›¸å¯¹ä¸Šä¸€å¸§å¯èƒ½çš„ä½å§¿å˜æ¢ å¾—åˆ†
+///æ±‚å‡ºå˜æ¢åç‚¹äº‘åœ¨0-255åœ°å›¾ä¸­æ¯ä¸ªæ·±åº¦çš„ä½ç½®åºå· å¹¶æ„é€ ä¸€ä¸ªDiscreteScan3Dç±»
 DiscreteScan3D FastCorrelativeScanMatcher3D::DiscretizeScan(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
     const sensor::PointCloud& point_cloud, const transform::Rigid3f& pose,
     const float rotational_score) const {
-  std::vector<std::vector<Eigen::Array3i>> cell_indices_per_depth; ///±ä»»ºóµãÔÆÃ¿¸öÉî¶È0-255µØÍ¼µÄ3DĞòºÅ
-  const PrecomputationGrid3D& original_grid = ///Ô­Ê¼¾Ö²¿µØÍ¼
+  std::vector<std::vector<Eigen::Array3i>> cell_indices_per_depth; ///å˜æ¢åç‚¹äº‘æ¯ä¸ªæ·±åº¦0-255åœ°å›¾çš„3Dåºå·
+  const PrecomputationGrid3D& original_grid = ///åŸå§‹å±€éƒ¨åœ°å›¾
       precomputation_grid_stack_->Get(0);
   std::vector<Eigen::Array3i> full_resolution_cell_indices;
-  ///¶ÔÓÚ×ª»»ºóµÄµãÔÆµÄµã ½«×ø±ê×ª»¯ÎªÀëÉ¢ĞòºÅ(ÓĞÕıÓĞ¸º)
+  ///å¯¹äºè½¬æ¢åçš„ç‚¹äº‘çš„ç‚¹ å°†åæ ‡è½¬åŒ–ä¸ºç¦»æ•£åºå·(æœ‰æ­£æœ‰è´Ÿ)
   for (const sensor::RangefinderPoint& point :
        sensor::TransformPointCloud(point_cloud, pose)) {
     full_resolution_cell_indices.push_back(
         original_grid.GetCellIndex(point.position));
   }
-  const int full_resolution_depth = std::min(options_.full_resolution_depth(), ///±£³Ö·Ö±æÂÊµÄÉî¶È
+  const int full_resolution_depth = std::min(options_.full_resolution_depth(), ///ä¿æŒåˆ†è¾¨ç‡çš„æ·±åº¦
                                              options_.branch_and_bound_depth());
   CHECK_GE(full_resolution_depth, 1);
-  ///·Ö±æÂÊ²»±ä µãÔÆ×ø±ê²»±ä
+  ///åˆ†è¾¨ç‡ä¸å˜ ç‚¹äº‘åæ ‡ä¸å˜
   for (int i = 0; i != full_resolution_depth; ++i) {
     cell_indices_per_depth.push_back(full_resolution_cell_indices);
   }
-  ///½µ¼¶·Ö±æÂÊµÄÉî¶È²ãÊı
+  ///é™çº§åˆ†è¾¨ç‡çš„æ·±åº¦å±‚æ•°
   const int low_resolution_depth =
       options_.branch_and_bound_depth() - full_resolution_depth;
   CHECK_GE(low_resolution_depth, 0);
-  ///ÏßĞÔËÑË÷´°¿Ú µ¥·½Ïò
+  ///çº¿æ€§æœç´¢çª—å£ å•æ–¹å‘
   const Eigen::Array3i search_window_start(
       -search_parameters.linear_xy_window_size,
       -search_parameters.linear_xy_window_size,
       -search_parameters.linear_z_window_size);
-  ///¶ÔÓÚÃ¿Ò»¸öµÍ·Ö±æÂÊÉî¶È
+  ///å¯¹äºæ¯ä¸€ä¸ªä½åˆ†è¾¨ç‡æ·±åº¦
   for (int i = 0; i != low_resolution_depth; ++i) {
     const int reduction_exponent = i + 1;
-    const Eigen::Array3i low_resolution_search_window_start( ///Ëõ·ÅºóËÑË÷´°¿Ú(µ¥·½Ïò)
+    const Eigen::Array3i low_resolution_search_window_start( ///ç¼©æ”¾åæœç´¢çª—å£(å•æ–¹å‘)
         search_window_start[0] >> reduction_exponent,
         search_window_start[1] >> reduction_exponent,
         search_window_start[2] >> reduction_exponent);
     cell_indices_per_depth.emplace_back();
-    ///Ã¿Ò»¸ö×ª»»ºóµãÔÆÖĞµÄµãÔÚÔ­Ê¼¸ñÕ¤µÄµØÍ¼ÖĞµÄ3DĞòºÅ
+    ///æ¯ä¸€ä¸ªè½¬æ¢åç‚¹äº‘ä¸­çš„ç‚¹åœ¨åŸå§‹æ ¼æ …çš„åœ°å›¾ä¸­çš„3Dåºå·
     for (const Eigen::Array3i& cell_index : full_resolution_cell_indices) {
-      const Eigen::Array3i cell_at_start = cell_index + search_window_start; ///°ÑËùÓĞµÄµãÔÆ±ä³ÉÖ»ÓĞ¸ºµÄ×ø±ê
-      ///Ëõ·ÅµãÔÆ×ø±ê
+      const Eigen::Array3i cell_at_start = cell_index + search_window_start; ///æŠŠæ‰€æœ‰çš„ç‚¹äº‘å˜æˆåªæœ‰è´Ÿçš„åæ ‡
+      ///ç¼©æ”¾ç‚¹äº‘åæ ‡
       const Eigen::Array3i low_resolution_cell_at_start(
           cell_at_start[0] >> reduction_exponent,
           cell_at_start[1] >> reduction_exponent,
           cell_at_start[2] >> reduction_exponent);
-      ///½«µãÔÆ±ä³ÉÕı¸º¶¼ÓĞ Ìí¼Óµ½vector(±ä»»ºóµãÔÆÃ¿¸öÉî¶È0-255µØÍ¼µÄ3DĞòºÅ)
+      ///å°†ç‚¹äº‘å˜æˆæ­£è´Ÿéƒ½æœ‰ æ·»åŠ åˆ°vector(å˜æ¢åç‚¹äº‘æ¯ä¸ªæ·±åº¦0-255åœ°å›¾çš„3Dåºå·)
       cell_indices_per_depth.back().push_back(
           low_resolution_cell_at_start - low_resolution_search_window_start);
     }
   }
-  ///¹¹ÔìÀëÉ¢ºóµÄµãÔÆ
+  ///æ„é€ ç¦»æ•£åçš„ç‚¹äº‘
   return DiscreteScan3D{pose, cell_indices_per_depth, rotational_score};
 }
 
-///ÏÈÊ¹ÓÃ¿ÉÄÜµÄ½Ç¶ÈÆ¥Åä µ±Ç°µãÔÆºÍ¾Ö²¿µØÍ¼Æ¥Ö±·½Í¼
-///ÔÙÇóÖ±·½Í¼Æ¥ÅäµÃ·Ö½Ï¸ßµÄµãÔÆ Æä±ä»»µãÔÆÔÚÔ­Ê¼¸ñÕ¤µÄµØÍ¼ÖĞÃ¿¸öÉî¶ÈµÄÎ»ÖÃĞòºÅ
-///Ã¿Ò»¸öÎ»×Ë¹¹ÔìÒ»¸öDiscreteScan3DÀà
-///ÊäÈë: ËÑË÷²ÎÊı µãÔÆ Ğı×ªÖ±·½Í¼ ÖØÁ¦·½Ïò ÉÏÒ»Ö¡Î»×Ë ¾Ö²¿µØÍ¼Î»×Ë
-///Êä³ö: ¿ÉÄÜÆ¥ÅäµÄÎ»×Ëvector<ÀëÉ¢ºóµãÔÆÀà(Ïà¶ÔÎ»×Ë±ä»»,±ä»»ºóµãÔÆÔÚ0-255µØÍ¼ÖĞÃ¿¸öÉî¶ÈµÄÎ»ÖÃĞòºÅ,Ğı×ªµÃ·Ö)>
+///å…ˆä½¿ç”¨å¯èƒ½çš„è§’åº¦åŒ¹é… å½“å‰ç‚¹äº‘å’Œå±€éƒ¨åœ°å›¾åŒ¹ç›´æ–¹å›¾
+///å†æ±‚ç›´æ–¹å›¾åŒ¹é…å¾—åˆ†è¾ƒé«˜çš„ç‚¹äº‘ å…¶å˜æ¢ç‚¹äº‘åœ¨åŸå§‹æ ¼æ …çš„åœ°å›¾ä¸­æ¯ä¸ªæ·±åº¦çš„ä½ç½®åºå·
+///æ¯ä¸€ä¸ªä½å§¿æ„é€ ä¸€ä¸ªDiscreteScan3Dç±»
+///è¾“å…¥: æœç´¢å‚æ•° ç‚¹äº‘ æ—‹è½¬ç›´æ–¹å›¾ é‡åŠ›æ–¹å‘ ä¸Šä¸€å¸§ä½å§¿ å±€éƒ¨åœ°å›¾ä½å§¿
+///è¾“å‡º: å¯èƒ½åŒ¹é…çš„ä½å§¿vector<ç¦»æ•£åç‚¹äº‘ç±»(ç›¸å¯¹ä½å§¿å˜æ¢,å˜æ¢åç‚¹äº‘åœ¨0-255åœ°å›¾ä¸­æ¯ä¸ªæ·±åº¦çš„ä½ç½®åºå·,æ—‹è½¬å¾—åˆ†)>
 std::vector<DiscreteScan3D> FastCorrelativeScanMatcher3D::GenerateDiscreteScans(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
     const sensor::PointCloud& point_cloud,
@@ -297,7 +297,7 @@ std::vector<DiscreteScan3D> FastCorrelativeScanMatcher3D::GenerateDiscreteScans(
     const Eigen::Quaterniond& gravity_alignment,
     const transform::Rigid3f& global_node_pose,
     const transform::Rigid3f& global_submap_pose) const {
-  std::vector<DiscreteScan3D> result; ///¿ÉÄÜÆ¥ÅäµÄÎ»×Ëvector<ÀëÉ¢ºóµãÔÆÀà>
+  std::vector<DiscreteScan3D> result; ///å¯èƒ½åŒ¹é…çš„ä½å§¿vector<ç¦»æ•£åç‚¹äº‘ç±»>
   // We set this value to something on the order of resolution to make sure that
   // the std::acos() below is defined.
   float max_scan_range = 3.f * resolution_;
@@ -306,31 +306,31 @@ std::vector<DiscreteScan3D> FastCorrelativeScanMatcher3D::GenerateDiscreteScans(
     max_scan_range = std::max(range, max_scan_range);
   }
   const float kSafetyMargin = 1.f - 1e-2f;
-  const float angular_step_size = ///½Ç¶ÈËÑË÷²½³¤
+  const float angular_step_size = ///è§’åº¦æœç´¢æ­¥é•¿
       kSafetyMargin * std::acos(1.f - common::Pow2(resolution_) /
                                           (2.f * common::Pow2(max_scan_range)));
-  const int angular_window_size = common::RoundToInt( ///Í¬Ò»¸ö·½ÏòµÄ½Ç¶ÈËÑË÷´ÎÊı
+  const int angular_window_size = common::RoundToInt( ///åŒä¸€ä¸ªæ–¹å‘çš„è§’åº¦æœç´¢æ¬¡æ•°
       search_parameters.angular_search_window / angular_step_size);
-  std::vector<float> angles; ///½Ç¶ÈËÑË÷ÁĞ±í
+  std::vector<float> angles; ///è§’åº¦æœç´¢åˆ—è¡¨
   for (int rz = -angular_window_size; rz <= angular_window_size; ++rz) {
     angles.push_back(rz * angular_step_size);
   }
-  ///¾Ö²¿µØÍ¼ºÍÉÏÒ»Ö¡Ö®¼äµÄÎ»×Ë±ä»»
+  ///å±€éƒ¨åœ°å›¾å’Œä¸Šä¸€å¸§ä¹‹é—´çš„ä½å§¿å˜æ¢
   const transform::Rigid3f node_to_submap =
       global_submap_pose.inverse() * global_node_pose;
-  ///³¢ÊÔÆ¥ÅäËùÓĞ½Ç¶ÈµÄµ±Ç°Ö¡Ö±·½Í¼ºÍ¾Ö²¿µØÍ¼µÄÖ±·½Í¼
-  ///ËÑË÷½Ç¶ÈÖ±·½Í¼ÏòÁ¿ºÍ¾Ö²¿µØÍ¼Ö±·½Í¼ÏòÁ¿µÄ¼Ğ½ÇcosÖµ vector
+  ///å°è¯•åŒ¹é…æ‰€æœ‰è§’åº¦çš„å½“å‰å¸§ç›´æ–¹å›¾å’Œå±€éƒ¨åœ°å›¾çš„ç›´æ–¹å›¾
+  ///æœç´¢è§’åº¦ç›´æ–¹å›¾å‘é‡å’Œå±€éƒ¨åœ°å›¾ç›´æ–¹å›¾å‘é‡çš„å¤¹è§’coså€¼ vector
   const std::vector<float> scores = rotational_scan_matcher_.Match(
       rotational_scan_matcher_histogram,
       transform::GetYaw(node_to_submap.rotation() *
                         gravity_alignment.inverse().cast<float>()),
       angles);
   for (size_t i = 0; i != angles.size(); ++i) {
-      ///Å×ÆúµÃ·ÖĞ¡ÓÚ×îµÍÒªÇóµÄµÃ·Ö
+      ///æŠ›å¼ƒå¾—åˆ†å°äºæœ€ä½è¦æ±‚çš„å¾—åˆ†
     if (scores[i] < options_.min_rotational_score()) {
       continue;
     }
-    ///¼ÆËãÖ±·½Í¼Æ¥Åä³É¹¦µÄµ±Ç°Ö¡Î»×Ë
+    ///è®¡ç®—ç›´æ–¹å›¾åŒ¹é…æˆåŠŸçš„å½“å‰å¸§ä½å§¿
     const Eigen::Vector3f angle_axis(0.f, 0.f, angles[i]);
     // It's important to apply the 'angle_axis' rotation between the translation
     // and rotation of the 'initial_pose', so that the rotation is around the
@@ -341,36 +341,36 @@ std::vector<DiscreteScan3D> FastCorrelativeScanMatcher3D::GenerateDiscreteScans(
             transform::AngleAxisVectorToRotationQuaternion(angle_axis) *
             global_node_pose.rotation());
     result.push_back(
-        ///Çó³ö±ä»»ºóµãÔÆÔÚ0-255µØÍ¼ÖĞÃ¿¸öÉî¶ÈµÄÎ»ÖÃĞòºÅ ²¢¹¹ÔìÒ»¸öDiscreteScan3DÀà
+        ///æ±‚å‡ºå˜æ¢åç‚¹äº‘åœ¨0-255åœ°å›¾ä¸­æ¯ä¸ªæ·±åº¦çš„ä½ç½®åºå· å¹¶æ„é€ ä¸€ä¸ªDiscreteScan3Dç±»
         DiscretizeScan(search_parameters, point_cloud, pose, scores[i]));
   }
   return result;
 }
 
-///¹¹ÔìµÍ·Ö±æÂÊºòÑ¡Î»×ËÁĞ±í
-///ÊäÈë: ËÑË÷²ÎÊı Î»×Ë¸öÊı
-///Êä³ö: vector<Ğı×ªÎ»×Ë ×î´óÉî¶ÈËÑË÷²½³¤>
+///æ„é€ ä½åˆ†è¾¨ç‡å€™é€‰ä½å§¿åˆ—è¡¨
+///è¾“å…¥: æœç´¢å‚æ•° ä½å§¿ä¸ªæ•°
+///è¾“å‡º: vector<æ—‹è½¬ä½å§¿ æœ€å¤§æ·±åº¦æœç´¢æ­¥é•¿>
 std::vector<Candidate3D>
 FastCorrelativeScanMatcher3D::GenerateLowestResolutionCandidates(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
     const int num_discrete_scans) const {
-  const int linear_step_size = 1 << precomputation_grid_stack_->max_depth(); ///×î´óÉî¶ÈÏßĞÔËÑË÷²½³¤
-  ///xyz·½ÏòµÄËÑË÷´ÎÊı
-  ///±ÈÈçËÑË÷´°ÊÇ²½³¤ Êµ¼ÊÉÏÓ¦¸ÃËÑË÷ ²»¶¯ +²½³¤ -²½³¤ Èı¸ö¿ÉÄÜ
+  const int linear_step_size = 1 << precomputation_grid_stack_->max_depth(); ///æœ€å¤§æ·±åº¦çº¿æ€§æœç´¢æ­¥é•¿
+  ///xyzæ–¹å‘çš„æœç´¢æ¬¡æ•°
+  ///æ¯”å¦‚æœç´¢çª—æ˜¯æ­¥é•¿ å®é™…ä¸Šåº”è¯¥æœç´¢ ä¸åŠ¨ +æ­¥é•¿ -æ­¥é•¿ ä¸‰ä¸ªå¯èƒ½
   const int num_lowest_resolution_linear_xy_candidates =
       (2 * search_parameters.linear_xy_window_size + linear_step_size) /
       linear_step_size;
   const int num_lowest_resolution_linear_z_candidates =
       (2 * search_parameters.linear_z_window_size + linear_step_size) /
       linear_step_size;
-  ///×Ü¹²µÍ·Ö±æÂÊËÑË÷´ÎÊı
+  ///æ€»å…±ä½åˆ†è¾¨ç‡æœç´¢æ¬¡æ•°
   const int num_candidates =
       num_discrete_scans *
       common::Power(num_lowest_resolution_linear_xy_candidates, 2) *
       num_lowest_resolution_linear_z_candidates;
   std::vector<Candidate3D> candidates;
   candidates.reserve(num_candidates);
-  ///Ã¿Ò»¸öºòÑ¡Î»×Ë
+  ///æ¯ä¸€ä¸ªå€™é€‰ä½å§¿
   for (int scan_index = 0; scan_index != num_discrete_scans; ++scan_index) {
     for (int z = -search_parameters.linear_z_window_size;
          z <= search_parameters.linear_z_window_size; z += linear_step_size) {
@@ -389,59 +389,59 @@ FastCorrelativeScanMatcher3D::GenerateLowestResolutionCandidates(
   return candidates;
 }
 
-///¸ù¾İ·Ö±æÂÊÆ½ÒÆ¶ÔÓ¦Ğı×ªµãÔÆ ¶ÔËùÓĞÆ½ÒÆºóµãÔÆÔÚ¾Ö²¿µØÍ¼ÖĞµÄµÃ·ÖÇóºÍ
-///°´ÕÕ¸ÅÂÊ´Ó´òÅÅĞòºòÑ¡Î»×Ë
-///ÊäÈë:Éî¶È ÀëÉ¢µãÔÆÁĞ±í ºòÑ¡Î»×ËÁĞ±í
-///·µ»Ø:¸ù¾İ¸ÅÂÊÅÅĞòºóµÄºòÑ¡Î»×ËÁĞ±í
+///æ ¹æ®åˆ†è¾¨ç‡å¹³ç§»å¯¹åº”æ—‹è½¬ç‚¹äº‘ å¯¹æ‰€æœ‰å¹³ç§»åç‚¹äº‘åœ¨å±€éƒ¨åœ°å›¾ä¸­çš„å¾—åˆ†æ±‚å’Œ
+///æŒ‰ç…§æ¦‚ç‡ä»æ‰“æ’åºå€™é€‰ä½å§¿
+///è¾“å…¥:æ·±åº¦ ç¦»æ•£ç‚¹äº‘åˆ—è¡¨ å€™é€‰ä½å§¿åˆ—è¡¨
+///è¿”å›:æ ¹æ®æ¦‚ç‡æ’åºåçš„å€™é€‰ä½å§¿åˆ—è¡¨
 void FastCorrelativeScanMatcher3D::ScoreCandidates(
     const int depth, const std::vector<DiscreteScan3D>& discrete_scans,
     std::vector<Candidate3D>* const candidates) const {
-  const int reduction_exponent = ///¸ÃÉî¶È·Ö±æÂÊ
+  const int reduction_exponent = ///è¯¥æ·±åº¦åˆ†è¾¨ç‡
       std::max(0, depth - options_.full_resolution_depth() + 1);
-  ///Ã¿Ò»¸öºòÑ¡Î»×Ë
+  ///æ¯ä¸€ä¸ªå€™é€‰ä½å§¿
   for (Candidate3D& candidate : *candidates) {
-    int sum = 0; ///µãÔÆÆ½ÒÆºó¾Ö²¿µØÍ¼ÔÚµãÔÆÎ»ÖÃÉÏµÄµÃ·Ö
-    const DiscreteScan3D& discrete_scan = discrete_scans[candidate.scan_index]; ///¸ÃÎ»×Ë¶ÔÓ¦µÄĞı×ªºóµÄµãÔÆ
-    ///ÏßĞÔÎ»ÒÆ³ËÉÏËõ·ÅÏµÊı
+    int sum = 0; ///ç‚¹äº‘å¹³ç§»åå±€éƒ¨åœ°å›¾åœ¨ç‚¹äº‘ä½ç½®ä¸Šçš„å¾—åˆ†
+    const DiscreteScan3D& discrete_scan = discrete_scans[candidate.scan_index]; ///è¯¥ä½å§¿å¯¹åº”çš„æ—‹è½¬åçš„ç‚¹äº‘
+    ///çº¿æ€§ä½ç§»ä¹˜ä¸Šç¼©æ”¾ç³»æ•°
     const Eigen::Array3i offset(candidate.offset[0] >> reduction_exponent,
                                 candidate.offset[1] >> reduction_exponent,
                                 candidate.offset[2] >> reduction_exponent);
     CHECK_LT(depth, discrete_scan.cell_indices_per_depth.size());
-    ///¸ÃÉî¶ÈÏÂÃ¿Ò»¸öµãµÄ3DĞòºÅ(ÓĞÕıÓĞ¸º ÒÑ¾­Ëõ·Å)
+    ///è¯¥æ·±åº¦ä¸‹æ¯ä¸€ä¸ªç‚¹çš„3Dåºå·(æœ‰æ­£æœ‰è´Ÿ å·²ç»ç¼©æ”¾)
     for (const Eigen::Array3i& cell_index :
          discrete_scan.cell_indices_per_depth[depth]) {
-      const Eigen::Array3i proposed_cell_index = cell_index + offset; ///Æ½ÒÆµãÔÆ
+      const Eigen::Array3i proposed_cell_index = cell_index + offset; ///å¹³ç§»ç‚¹äº‘
       sum += precomputation_grid_stack_->Get(depth).value(proposed_cell_index);
     }
-    ///µÃ·Ö×ª»¯Îª¸ÅÂÊ
+    ///å¾—åˆ†è½¬åŒ–ä¸ºæ¦‚ç‡
     candidate.score = PrecomputationGrid3D::ToProbability(
         sum /
         static_cast<float>(discrete_scan.cell_indices_per_depth[depth].size()));
   }
-  ///´Ó´óµ½Ğ¡ÅÅĞò
+  ///ä»å¤§åˆ°å°æ’åº
   std::sort(candidates->begin(), candidates->end(),
             std::greater<Candidate3D>());
 }
 
-///ÕÒµ½µÍ·Ö±æÂÊÏÂµÄºòÑ¡Î»×Ë ²¢ÅÅĞò
-///ÊäÈë:ËÑË÷²ÎÊı ºòÑ¡Î»×ËDiscreteScan3D
-///Êä³ö:¸ù¾İµÍ·Ö±æÂÊÏÂµÄ¸ÅÂÊÅÅĞòºóµÄºòÑ¡Î»×ËÁĞ±í
+///æ‰¾åˆ°ä½åˆ†è¾¨ç‡ä¸‹çš„å€™é€‰ä½å§¿ å¹¶æ’åº
+///è¾“å…¥:æœç´¢å‚æ•° å€™é€‰ä½å§¿DiscreteScan3D
+///è¾“å‡º:æ ¹æ®ä½åˆ†è¾¨ç‡ä¸‹çš„æ¦‚ç‡æ’åºåçš„å€™é€‰ä½å§¿åˆ—è¡¨
 std::vector<Candidate3D>
 FastCorrelativeScanMatcher3D::ComputeLowestResolutionCandidates(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
     const std::vector<DiscreteScan3D>& discrete_scans) const {
-  ///¹¹ÔìµÍ·Ö±æÂÊºòÑ¡Î»×ËÁĞ±í
-  std::vector<Candidate3D> lowest_resolution_candidates = ///ºòÑ¡Î»×ËÁĞ±í
+  ///æ„é€ ä½åˆ†è¾¨ç‡å€™é€‰ä½å§¿åˆ—è¡¨
+  std::vector<Candidate3D> lowest_resolution_candidates = ///å€™é€‰ä½å§¿åˆ—è¡¨
       GenerateLowestResolutionCandidates(search_parameters,
                                          discrete_scans.size());
-  ///¸ù¾İ·Ö±æÂÊÆ½ÒÆ¶ÔÓ¦Ğı×ªµãÔÆ ¶ÔËùÓĞÆ½ÒÆºóµãÔÆÔÚ¾Ö²¿µØÍ¼ÖĞµÄµÃ·ÖÇóºÍ
-  ///°´ÕÕ¸ÅÂÊ´Ó´òÅÅĞòºòÑ¡Î»×Ë
+  ///æ ¹æ®åˆ†è¾¨ç‡å¹³ç§»å¯¹åº”æ—‹è½¬ç‚¹äº‘ å¯¹æ‰€æœ‰å¹³ç§»åç‚¹äº‘åœ¨å±€éƒ¨åœ°å›¾ä¸­çš„å¾—åˆ†æ±‚å’Œ
+  ///æŒ‰ç…§æ¦‚ç‡ä»æ‰“æ’åºå€™é€‰ä½å§¿
   ScoreCandidates(precomputation_grid_stack_->max_depth(), discrete_scans,
                   &lowest_resolution_candidates);
   return lowest_resolution_candidates;
 }
 
-///»ñÈ¡ºòÑ¡Î»×Ë
+///è·å–å€™é€‰ä½å§¿
 transform::Rigid3f FastCorrelativeScanMatcher3D::GetPoseFromCandidate(
     const std::vector<DiscreteScan3D>& discrete_scans,
     const Candidate3D& candidate) const {
@@ -450,27 +450,27 @@ transform::Rigid3f FastCorrelativeScanMatcher3D::GetPoseFromCandidate(
          discrete_scans[candidate.scan_index].pose;
 }
 
-///ÊäÈë:ËÑË÷²ÎÊı ÀëÉ¢µãÔÆ µÍ·Ö±æÂÊºòÑ¡Î»×Ë ×î´óÉî¶È ¾Ö²¿¶¨Î»×îĞ¡µÃ·Ö
-///Êä³ö:×îÓÅ±ä»»Î»×Ë
+///è¾“å…¥:æœç´¢å‚æ•° ç¦»æ•£ç‚¹äº‘ ä½åˆ†è¾¨ç‡å€™é€‰ä½å§¿ æœ€å¤§æ·±åº¦ å±€éƒ¨å®šä½æœ€å°å¾—åˆ†
+///è¾“å‡º:æœ€ä¼˜å˜æ¢ä½å§¿
 Candidate3D FastCorrelativeScanMatcher3D::BranchAndBound(
     const FastCorrelativeScanMatcher3D::SearchParameters& search_parameters,
     const std::vector<DiscreteScan3D>& discrete_scans,
     const std::vector<Candidate3D>& candidates, const int candidate_depth,
     float min_score) const {
-    ///Èç¹û×î´óÉî¶ÈµÈÓÚ0
+    ///å¦‚æœæœ€å¤§æ·±åº¦ç­‰äº0
   if (candidate_depth == 0) {
-      ///Ã¿Ò»¸öµÍ·Ö±æÂÊºòÑ¡Î»×Ë
+      ///æ¯ä¸€ä¸ªä½åˆ†è¾¨ç‡å€™é€‰ä½å§¿
     for (const Candidate3D& candidate : candidates) {
-        ///Èç¹ûµÃ·Ö½ÏĞ¡ Ö±½Ó·µ»Ø²»´æÔÚ
+        ///å¦‚æœå¾—åˆ†è¾ƒå° ç›´æ¥è¿”å›ä¸å­˜åœ¨
       if (candidate.score <= min_score) {
         // Return if the candidate is bad because the following candidate will
         // not have better score.
         return Candidate3D::Unsuccessful();
       }
-      const float low_resolution_score = ///µÍ·Ö±æÂÊÆ½ÒÆºóµÄÖ±·½Í¼Æ¥ÅäµÃ·Ö
+      const float low_resolution_score = ///ä½åˆ†è¾¨ç‡å¹³ç§»åçš„ç›´æ–¹å›¾åŒ¹é…å¾—åˆ†
           (*search_parameters.low_resolution_matcher)(
               GetPoseFromCandidate(discrete_scans, candidate));
-      ///Èç¹ûÆ½ÒÆºóµÄÖ±·½Í¼Æ¥ÅäµÄ·ÖÒÀ¾É´óÓÚãĞÖµ
+      ///å¦‚æœå¹³ç§»åçš„ç›´æ–¹å›¾åŒ¹é…çš„åˆ†ä¾æ—§å¤§äºé˜ˆå€¼
       if (low_resolution_score >= options_.min_low_resolution_score()) {
         // We found the best candidate that passes the matching function.
         Candidate3D best_candidate = candidate;
@@ -483,20 +483,20 @@ Candidate3D FastCorrelativeScanMatcher3D::BranchAndBound(
     return Candidate3D::Unsuccessful();
   }
 
-  ///Èç¹û×î´óÉî¶È²»µÈÓÚ0
-  Candidate3D best_high_resolution_candidate = Candidate3D::Unsuccessful(); ///×îºÃÎ»×Ë
-  best_high_resolution_candidate.score = min_score; ///µÃ·Ö
-  ///Ã¿Ò»¸öºòÑ¡Î»×Ë
+  ///å¦‚æœæœ€å¤§æ·±åº¦ä¸ç­‰äº0
+  Candidate3D best_high_resolution_candidate = Candidate3D::Unsuccessful(); ///æœ€å¥½ä½å§¿
+  best_high_resolution_candidate.score = min_score; ///å¾—åˆ†
+  ///æ¯ä¸€ä¸ªå€™é€‰ä½å§¿
   for (const Candidate3D& candidate : candidates) {
-      ///Èç¹ûµÃ·ÖĞ¡ÓÚ¾Ö²¿¶¨Î»×îĞ¡µÃ·Ö¾ÍÌø³öÑ­»·(ÓÉÓÚºòÑ¡Î»×ËÊÇ°´ÕÕµÃ·ÖÅÅĞòµÄ)
+      ///å¦‚æœå¾—åˆ†å°äºå±€éƒ¨å®šä½æœ€å°å¾—åˆ†å°±è·³å‡ºå¾ªç¯(ç”±äºå€™é€‰ä½å§¿æ˜¯æŒ‰ç…§å¾—åˆ†æ’åºçš„)
     if (candidate.score <= min_score) {
       break;
     }
 
-    std::vector<Candidate3D> higher_resolution_candidates; ///¸ÃÉî¶ÈºòÑ¡Î»×Ë
-    const int half_width = 1 << (candidate_depth - 1); ///¸ÃÉî¶ÈÍø¸ñ¿í¶ÈµÄÒ»°ë
-    ///zµÄÈ¡ÖµÖ»ÄÜÊÇ 0ºÍhalf_width
-      ///ÏŞ¶¨¸ÃÉî¶ÈËÑË÷·¶Î§ÔÚËÑË÷´°ÄÚ
+    std::vector<Candidate3D> higher_resolution_candidates; ///è¯¥æ·±åº¦å€™é€‰ä½å§¿
+    const int half_width = 1 << (candidate_depth - 1); ///è¯¥æ·±åº¦ç½‘æ ¼å®½åº¦çš„ä¸€åŠ
+    ///zçš„å–å€¼åªèƒ½æ˜¯ 0å’Œhalf_width
+      ///é™å®šè¯¥æ·±åº¦æœç´¢èŒƒå›´åœ¨æœç´¢çª—å†…
     for (int z : {0, half_width}) {
       if (candidate.offset.z() + z > search_parameters.linear_z_window_size) {
         break;
@@ -516,10 +516,10 @@ Candidate3D FastCorrelativeScanMatcher3D::BranchAndBound(
         }
       }
     }
-    ///È¡µÃ·ÖÂú×ãÒªÇóµÄ ½øĞĞÏÂÒ»Éî¶ÈËÑË÷
+    ///å–å¾—åˆ†æ»¡è¶³è¦æ±‚çš„ è¿›è¡Œä¸‹ä¸€æ·±åº¦æœç´¢
     ScoreCandidates(candidate_depth - 1, discrete_scans,
                     &higher_resolution_candidates);
-    ///·µ»ØËùÓĞÉî¶ÈÖĞµÃ·Ö×î¶àµÄºòÑ¡Î»×Ë
+    ///è¿”å›æ‰€æœ‰æ·±åº¦ä¸­å¾—åˆ†æœ€å¤šçš„å€™é€‰ä½å§¿
     best_high_resolution_candidate = std::max(
         best_high_resolution_candidate,
         BranchAndBound(search_parameters, discrete_scans,

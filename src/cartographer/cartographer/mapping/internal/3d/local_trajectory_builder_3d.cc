@@ -69,19 +69,19 @@ std::unique_ptr<transform::Rigid3d> LocalTrajectoryBuilder3D::ScanMatch(
   }
   std::shared_ptr<const mapping::Submap3D> matching_submap =
       active_submaps_.submaps().front();
-  transform::Rigid3d initial_ceres_pose = ///¹À¼ÆµÄÎ»×ËÏà¶Ô¼¤»î¾Ö²¿µØÍ¼±ä»»³õÖµ
+  transform::Rigid3d initial_ceres_pose = ///ä¼°è®¡çš„ä½å§¿ç›¸å¯¹æ¿€æ´»å±€éƒ¨åœ°å›¾å˜æ¢åˆå€¼
       matching_submap->local_pose().inverse() * pose_prediction;
-  ///Ê¹ÓÃÔÚÏßÆ¥Åä
+  ///ä½¿ç”¨åœ¨çº¿åŒ¹é…
   if (options_.use_online_correlative_scan_matching()) {
     // We take a copy since we use 'initial_ceres_pose' as an output argument.
     const transform::Rigid3d initial_pose = initial_ceres_pose;
     const double score = real_time_correlative_scan_matcher_->Match(
         initial_pose, high_resolution_point_cloud_in_tracking,
         matching_submap->high_resolution_hybrid_grid(), &initial_ceres_pose);
-    kRealTimeCorrelativeScanMatcherScoreMetric->Observe(score); ///realtime²Ğ²î
+    kRealTimeCorrelativeScanMatcherScoreMetric->Observe(score); ///realtimeæ®‹å·®
   }
 
-  transform::Rigid3d pose_observation_in_submap; ///ceresÓÅ»¯ºóµÄÏà¶ÔsubmapµÄÎ»×Ë
+  transform::Rigid3d pose_observation_in_submap; ///ceresä¼˜åŒ–åçš„ç›¸å¯¹submapçš„ä½å§¿
   ceres::Solver::Summary summary;
   ceres_scan_matcher_->Match(
       (matching_submap->local_pose().inverse() * pose_prediction).translation(),
@@ -91,13 +91,13 @@ std::unique_ptr<transform::Rigid3d> LocalTrajectoryBuilder3D::ScanMatch(
        {&low_resolution_point_cloud_in_tracking,
         &matching_submap->low_resolution_hybrid_grid()}},
       &pose_observation_in_submap, &summary);
-  kCeresScanMatcherCostMetric->Observe(summary.final_cost); ///ceresÓÅ»¯²Ğ²î
-  ///Æ½ÒÆ²Ğ²î
+  kCeresScanMatcherCostMetric->Observe(summary.final_cost); ///ceresä¼˜åŒ–æ®‹å·®
+  ///å¹³ç§»æ®‹å·®
   const double residual_distance = (pose_observation_in_submap.translation() -
                                     initial_ceres_pose.translation())
                                        .norm();
   kScanMatcherResidualDistanceMetric->Observe(residual_distance);
-  ///½Ç¶È²Ğ²î
+  ///è§’åº¦æ®‹å·®
   const double residual_angle =
       pose_observation_in_submap.rotation().angularDistance(
           initial_ceres_pose.rotation());
@@ -106,26 +106,26 @@ std::unique_ptr<transform::Rigid3d> LocalTrajectoryBuilder3D::ScanMatch(
                                                pose_observation_in_submap);
 }
 
-///ÏòÎ»×ËÍÆ¶ÏÆ÷ÀïÌí¼ÓImuÊı¾İ
+///å‘ä½å§¿æ¨æ–­å™¨é‡Œæ·»åŠ Imuæ•°æ®
 void LocalTrajectoryBuilder3D::AddImuData(const sensor::ImuData& imu_data) {
-  ///Èç¹û´æÔÚÎ»×ËÍÆ¶ÏÆ÷
+  ///å¦‚æœå­˜åœ¨ä½å§¿æ¨æ–­å™¨
   if (extrapolator_ != nullptr) {
-    ///½«ImuÊı¾İÌí¼Óµ½ImuĞòÁĞÖĞ Ê¹ImuĞòÁĞÖ»ÓĞÒ»¸öImuµÄÊ±¼äÔçÓÚÎ»×ËÊ±¼ä
+    ///å°†Imuæ•°æ®æ·»åŠ åˆ°Imuåºåˆ—ä¸­ ä½¿Imuåºåˆ—åªæœ‰ä¸€ä¸ªImuçš„æ—¶é—´æ—©äºä½å§¿æ—¶é—´
     extrapolator_->AddImuData(imu_data);
     return;
   }
   // We derive velocities from poses which are at least 1 ms apart for numerical
   // stability. Usually poses known to the extrapolator will be further apart
   // in time and thus the last two are used.
-  ///ÎªÁËÊıÖµÎÈ¶¨ĞÔ£¬ÎÒÃÇ´ÓÏà¾àÖÁÉÙ1ºÁÃëµÄ×ËÌ¬ÖĞµ¼³öËÙ¶È¡£
-  ///Í¨³£ÍâÍÆÆ÷ËùÖªµÀµÄ×ËÌ¬»áÔÚÊ±¼äÉÏ½øÒ»²½·Ö¿ª£¬Òò´ËÊ¹ÓÃ×îºóÁ½¸ö¡£
-  constexpr double kExtrapolationEstimationTimeSec = 0.001; ///¼ÆËãÎ»×ËÊ±¼ä¼ä¸ô
+  ///ä¸ºäº†æ•°å€¼ç¨³å®šæ€§ï¼Œæˆ‘ä»¬ä»ç›¸è·è‡³å°‘1æ¯«ç§’çš„å§¿æ€ä¸­å¯¼å‡ºé€Ÿåº¦ã€‚
+  ///é€šå¸¸å¤–æ¨å™¨æ‰€çŸ¥é“çš„å§¿æ€ä¼šåœ¨æ—¶é—´ä¸Šè¿›ä¸€æ­¥åˆ†å¼€ï¼Œå› æ­¤ä½¿ç”¨æœ€åä¸¤ä¸ªã€‚
+  constexpr double kExtrapolationEstimationTimeSec = 0.001; ///è®¡ç®—ä½å§¿æ—¶é—´é—´éš”
   extrapolator_ = mapping::PoseExtrapolator::InitializeWithImu(
       ::cartographer::common::FromSeconds(kExtrapolationEstimationTimeSec),
       options_.imu_gravity_time_constant(), imu_data);
 }
 
-///´«¸ĞÆ÷id µãÔÆ
+///ä¼ æ„Ÿå™¨id ç‚¹äº‘
 std::unique_ptr<LocalTrajectoryBuilder3D::MatchingResult>
 LocalTrajectoryBuilder3D::AddRangeData(
     const std::string& sensor_id,
@@ -137,7 +137,7 @@ LocalTrajectoryBuilder3D::AddRangeData(
     return nullptr;
   }
 
-  const common::Time& current_sensor_time = synchronized_data.time; ///µ±Ç°½áÊøÊ±¼ä
+  const common::Time& current_sensor_time = synchronized_data.time; ///å½“å‰ç»“æŸæ—¶é—´
   if (extrapolator_ == nullptr) {
     // Until we've initialized the extrapolator with our first IMU message, we
     // cannot compute the orientation of the rangefinder.
@@ -147,7 +147,7 @@ LocalTrajectoryBuilder3D::AddRangeData(
 
   CHECK(!synchronized_data.ranges.empty());
   CHECK_LE(synchronized_data.ranges.back().point_time.time, 0.f);
-  const common::Time time_first_point = ///Í¬²½µãÔÆÖĞµÄ×îĞ¡Ê±¼ä
+  const common::Time time_first_point = ///åŒæ­¥ç‚¹äº‘ä¸­çš„æœ€å°æ—¶é—´
       current_sensor_time +
       common::FromSeconds(synchronized_data.ranges.front().point_time.time);
   if (time_first_point < extrapolator_->GetLastPoseTime()) {
@@ -155,18 +155,18 @@ LocalTrajectoryBuilder3D::AddRangeData(
     return nullptr;
   }
 
-  ///ÌåËØÂË²¨ Í¬²½µãÔÆ Í¬Ò»Íø¸ñ Ö»±£ÁôÒ»¸öµã
-  std::vector<sensor::TimedPointCloudOriginData::RangeMeasurement> hits = ///ÂË²¨ºóµãÔÆ
+  ///ä½“ç´ æ»¤æ³¢ åŒæ­¥ç‚¹äº‘ åŒä¸€ç½‘æ ¼ åªä¿ç•™ä¸€ä¸ªç‚¹
+  std::vector<sensor::TimedPointCloudOriginData::RangeMeasurement> hits = ///æ»¤æ³¢åç‚¹äº‘
       sensor::VoxelFilter(0.5f * options_.voxel_filter_size())
           .Filter(synchronized_data.ranges);
 
-  std::vector<transform::Rigid3f> hits_poses; ///Ã¿Ò»¸öÂË²¨µãÔÆµÄµãµÄÊ±¼ä´Á¶ÔÓ¦µÄÎ»×ËÍÆ¶ÏÆ÷Î»×Ë
+  std::vector<transform::Rigid3f> hits_poses; ///æ¯ä¸€ä¸ªæ»¤æ³¢ç‚¹äº‘çš„ç‚¹çš„æ—¶é—´æˆ³å¯¹åº”çš„ä½å§¿æ¨æ–­å™¨ä½å§¿
   hits_poses.reserve(hits.size());
   bool warned = false;
 
-  ///Ã¿Ò»¸öÂË²¨ºóµãÔÆ ÕÒµ½ÆäÏà¶ÔÓÚÊÀ½ç×ø±êÏµµÄÎ»×Ë±ä»»
+  ///æ¯ä¸€ä¸ªæ»¤æ³¢åç‚¹äº‘ æ‰¾åˆ°å…¶ç›¸å¯¹äºä¸–ç•Œåæ ‡ç³»çš„ä½å§¿å˜æ¢
   for (const auto& hit : hits) {
-    common::Time time_point = ///¸ÃµãÊ±¼ä
+    common::Time time_point = ///è¯¥ç‚¹æ—¶é—´
         current_sensor_time + common::FromSeconds(hit.point_time.time);
     if (time_point < extrapolator_->GetLastExtrapolatedTime()) {
       if (!warned) {
@@ -177,7 +177,7 @@ LocalTrajectoryBuilder3D::AddRangeData(
       }
       time_point = extrapolator_->GetLastExtrapolatedTime();
     }
-    ///»ñÈ¡Î»×ËÍÆ¶ÏÆ÷·¢²¼µÄÎ»×Ë Èç¹û·¢²¼µÄÎ»×ËÊ±¼äºÍ¸ø¶¨Ê±¼ä²»Í¬ ÔòÔ¤²â¸ø¶¨Ê±¼äµÄÎ»×Ë¸üĞÂ·¢²¼Î»×Ë
+    ///è·å–ä½å§¿æ¨æ–­å™¨å‘å¸ƒçš„ä½å§¿ å¦‚æœå‘å¸ƒçš„ä½å§¿æ—¶é—´å’Œç»™å®šæ—¶é—´ä¸åŒ åˆ™é¢„æµ‹ç»™å®šæ—¶é—´çš„ä½å§¿æ›´æ–°å‘å¸ƒä½å§¿
     hits_poses.push_back(
         extrapolator_->ExtrapolatePose(time_point).cast<float>());
   }
@@ -187,23 +187,23 @@ LocalTrajectoryBuilder3D::AddRangeData(
     accumulated_range_data_ = sensor::RangeData{{}, {}, {}};
   }
 
-  ///ÂË²¨µãÔÆµÄÃ¿Ò»¸öµã ÕÒµ½ÆäÊÀ½ç×ø±êÏµµÄÎ»ÖÃ Ìí¼Óµ½ÀÛ¼ÆµãÔÆÖĞ
+  ///æ»¤æ³¢ç‚¹äº‘çš„æ¯ä¸€ä¸ªç‚¹ æ‰¾åˆ°å…¶ä¸–ç•Œåæ ‡ç³»çš„ä½ç½® æ·»åŠ åˆ°ç´¯è®¡ç‚¹äº‘ä¸­
   for (size_t i = 0; i < hits.size(); ++i) {
-    sensor::RangefinderPoint hit_in_local = ///¸ÃµãµØÍ¼×ø±ê
+    sensor::RangefinderPoint hit_in_local = ///è¯¥ç‚¹åœ°å›¾åæ ‡
         hits_poses[i] * sensor::ToRangefinderPoint(hits[i].point_time);
-    const Eigen::Vector3f origin_in_local = ///¸ÃµãÔ­µãµØÍ¼×ø±ê
+    const Eigen::Vector3f origin_in_local = ///è¯¥ç‚¹åŸç‚¹åœ°å›¾åæ ‡
         hits_poses[i] * synchronized_data.origins.at(hits[i].origin_index);
     const Eigen::Vector3f delta = hit_in_local.position - origin_in_local;
     const float range = delta.norm();
     if (range >= options_.min_range()) {
       if (range <= options_.max_range()) {
-          ///Õ¼¾İ
+          ///å æ®
         accumulated_range_data_.returns.push_back(hit_in_local);
       } else {
         // We insert a ray cropped to 'max_range' as a miss for hits beyond the
         // maximum range. This way the free space up to the maximum range will
         // be updated.
-        ///Î´Õ¼¾İ
+        ///æœªå æ®
         hit_in_local.position =
             origin_in_local + options_.max_range() / range * delta;
         accumulated_range_data_.misses.push_back(hit_in_local);
@@ -212,21 +212,21 @@ LocalTrajectoryBuilder3D::AddRangeData(
   }
   ++num_accumulated_;
 
-  ///Èç¹ûÀÛ¼Æ´ÎÊı³¬¹ıÉè¶¨Öµ
+  ///å¦‚æœç´¯è®¡æ¬¡æ•°è¶…è¿‡è®¾å®šå€¼
   if (num_accumulated_ >= options_.num_accumulated_range_data()) {
-    absl::optional<common::Duration> sensor_duration; ///ÀÛ¼ÆÊ±¼ä¼ä¸ô
-    ///´æÔÚÉÏÒ»Ö¡Êı¾İ
+    absl::optional<common::Duration> sensor_duration; ///ç´¯è®¡æ—¶é—´é—´éš”
+    ///å­˜åœ¨ä¸Šä¸€å¸§æ•°æ®
     if (last_sensor_time_.has_value()) {
       sensor_duration = current_sensor_time - last_sensor_time_.value();
     }
     last_sensor_time_ = current_sensor_time;
-    num_accumulated_ = 0; ///Çå¿ÕÀÛ¼Æ´ÎÊı
+    num_accumulated_ = 0; ///æ¸…ç©ºç´¯è®¡æ¬¡æ•°
 
-    transform::Rigid3f current_pose = ///µ±Ç°Î»×Ë
+    transform::Rigid3f current_pose = ///å½“å‰ä½å§¿
         extrapolator_->ExtrapolatePose(current_sensor_time).cast<float>();
 
     const auto voxel_filter_start = std::chrono::steady_clock::now();
-    ///ÌåËØÂË²¨
+    ///ä½“ç´ æ»¤æ³¢
     const sensor::RangeData filtered_range_data = {
         current_pose.translation(),
         sensor::VoxelFilter(options_.voxel_filter_size())
@@ -234,9 +234,9 @@ LocalTrajectoryBuilder3D::AddRangeData(
         sensor::VoxelFilter(options_.voxel_filter_size())
             .Filter(accumulated_range_data_.misses)};
     const auto voxel_filter_stop = std::chrono::steady_clock::now();
-    const auto voxel_filter_duration = voxel_filter_stop - voxel_filter_start; ///½øĞĞÌåËØÂË²¨µÄÊ±¼ä
+    const auto voxel_filter_duration = voxel_filter_stop - voxel_filter_start; ///è¿›è¡Œä½“ç´ æ»¤æ³¢çš„æ—¶é—´
 
-    ///ÌåËØÂË²¨·ÖÊıµÄ¼ÆËã
+    ///ä½“ç´ æ»¤æ³¢åˆ†æ•°çš„è®¡ç®—
     if (sensor_duration.has_value()) {
       const double voxel_filter_fraction =
           common::ToSeconds(voxel_filter_duration) /
@@ -252,23 +252,23 @@ LocalTrajectoryBuilder3D::AddRangeData(
   return nullptr;
 }
 
-///Ö»Ê¹ÓÃÀÛ¼ÆµãÔÆÆ¥Åäµ±Ç°Ö¡Î»×Ë
+///åªä½¿ç”¨ç´¯è®¡ç‚¹äº‘åŒ¹é…å½“å‰å¸§ä½å§¿
 std::unique_ptr<LocalTrajectoryBuilder3D::MatchingResult>
 LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     const common::Time time,
     const sensor::RangeData& filtered_range_data_in_tracking,
     const absl::optional<common::Duration>& sensor_duration) {
-  ///ÀÛ¼ÆÊı¾İÃ»ÓĞÓĞĞ§·¶Î§ÄÚµÄ¹Û²â
+  ///ç´¯è®¡æ•°æ®æ²¡æœ‰æœ‰æ•ˆèŒƒå›´å†…çš„è§‚æµ‹
   if (filtered_range_data_in_tracking.returns.empty()) {
     LOG(WARNING) << "Dropped empty range data.";
     return nullptr;
   }
-  const transform::Rigid3d pose_prediction = ///µ±Ç°Î»×Ë
+  const transform::Rigid3d pose_prediction = ///å½“å‰ä½å§¿
       extrapolator_->ExtrapolatePose(time);
 
   const auto scan_matcher_start = std::chrono::steady_clock::now();
 
-  ///¸ß·Ö±æÂÊ½øĞĞÊÊÓ¦ÌåËØÂË²¨Æ÷
+  ///é«˜åˆ†è¾¨ç‡è¿›è¡Œé€‚åº”ä½“ç´ æ»¤æ³¢å™¨
   sensor::AdaptiveVoxelFilter adaptive_voxel_filter(
       options_.high_resolution_adaptive_voxel_filter_options());
   const sensor::PointCloud high_resolution_point_cloud_in_tracking =
@@ -277,10 +277,10 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     LOG(WARNING) << "Dropped empty high resolution point cloud data.";
     return nullptr;
   }
-  ///µÍ·Ö±æÂÊ½øĞĞÊÊÓ¦ÌåËØÂË²¨Æ÷
+  ///ä½åˆ†è¾¨ç‡è¿›è¡Œé€‚åº”ä½“ç´ æ»¤æ³¢å™¨
   sensor::AdaptiveVoxelFilter low_resolution_adaptive_voxel_filter(
       options_.low_resolution_adaptive_voxel_filter_options());
-  const sensor::PointCloud low_resolution_point_cloud_in_tracking = ///Âú×ã×îĞ¡µãÊıÁ¿µÄµ±Ç°Ö¡µÍ·Ö±æÂÊµãÔÆ
+  const sensor::PointCloud low_resolution_point_cloud_in_tracking = ///æ»¡è¶³æœ€å°ç‚¹æ•°é‡çš„å½“å‰å¸§ä½åˆ†è¾¨ç‡ç‚¹äº‘
       low_resolution_adaptive_voxel_filter.Filter(
           filtered_range_data_in_tracking.returns);
   if (low_resolution_point_cloud_in_tracking.empty()) {
@@ -288,8 +288,8 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     return nullptr;
   }
 
-  ///¸ù¾İµãÔÆ Ô¤²âµÄÎ»×Ë ceresÓÅ»¯µÃµ½Î»×Ë
-  std::unique_ptr<transform::Rigid3d> pose_estimate = ///µ±Ç°ÊÀ½çÎ»×Ë±ä»»
+  ///æ ¹æ®ç‚¹äº‘ é¢„æµ‹çš„ä½å§¿ ceresä¼˜åŒ–å¾—åˆ°ä½å§¿
+  std::unique_ptr<transform::Rigid3d> pose_estimate = ///å½“å‰ä¸–ç•Œä½å§¿å˜æ¢
       ScanMatch(pose_prediction, low_resolution_point_cloud_in_tracking,
                 high_resolution_point_cloud_in_tracking);
   if (pose_estimate == nullptr) {
@@ -298,7 +298,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
   }
   extrapolator_->AddPose(time, *pose_estimate);
 
-  ///¼ÆËã¼¤¹âÆ¥ÅäµÃ·Ö
+  ///è®¡ç®—æ¿€å…‰åŒ¹é…å¾—åˆ†
   const auto scan_matcher_stop = std::chrono::steady_clock::now();
   const auto scan_matcher_duration = scan_matcher_stop - scan_matcher_start;
   if (sensor_duration.has_value()) {
@@ -308,14 +308,14 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     kLocalSlamScanMatcherFraction->Set(scan_matcher_fraction);
   }
 
-  ///¸ù¾İ¸ø¶¨Ê±¼ä ¸üĞÂimu»ı·ÖÆ÷ ¸üĞÂÖØÁ¦·½Ïò »ñÈ¡Imu½ÇËÙ¶È»ı·ÖÊı¾İ
-  const Eigen::Quaterniond gravity_alignment = ///Í¨¹ıImu»ı·ÖµÃµ½µÄÏà¶ÔÖØÁ¦µÄµ±Ç°Ğı×ªÎ»×Ë
+  ///æ ¹æ®ç»™å®šæ—¶é—´ æ›´æ–°imuç§¯åˆ†å™¨ æ›´æ–°é‡åŠ›æ–¹å‘ è·å–Imuè§’é€Ÿåº¦ç§¯åˆ†æ•°æ®
+  const Eigen::Quaterniond gravity_alignment = ///é€šè¿‡Imuç§¯åˆ†å¾—åˆ°çš„ç›¸å¯¹é‡åŠ›çš„å½“å‰æ—‹è½¬ä½å§¿
       extrapolator_->EstimateGravityOrientation(time);
-  ///ÊÀ½ç×ø±êÏµÂË²¨ºóÀÛ¼ÆÊı¾İµãÔÆ
+  ///ä¸–ç•Œåæ ‡ç³»æ»¤æ³¢åç´¯è®¡æ•°æ®ç‚¹äº‘
   sensor::RangeData filtered_range_data_in_local = sensor::TransformRangeData(
       filtered_range_data_in_tracking, pose_estimate->cast<float>());
 
-  ///½«¶à´«¸ĞÆ÷ÈÚºÏºóµÄµãÔÆ²åÈë¾Ö²¿µØÍ¼ÁĞ±í
+  ///å°†å¤šä¼ æ„Ÿå™¨èåˆåçš„ç‚¹äº‘æ’å…¥å±€éƒ¨åœ°å›¾åˆ—è¡¨
   const auto insert_into_submap_start = std::chrono::steady_clock::now();
   std::unique_ptr<InsertionResult> insertion_result = InsertIntoSubmap(
       time, filtered_range_data_in_local, filtered_range_data_in_tracking,
@@ -324,7 +324,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
       gravity_alignment);
   const auto insert_into_submap_stop = std::chrono::steady_clock::now();
 
-  ///²åÈë¾Ö²¿µÄµØÍ¼ËùÓÃµÄÊ±¼äÆÀ·Ö
+  ///æ’å…¥å±€éƒ¨çš„åœ°å›¾æ‰€ç”¨çš„æ—¶é—´è¯„åˆ†
   const auto insert_into_submap_duration =
       insert_into_submap_stop - insert_into_submap_start;
   if (sensor_duration.has_value()) {
@@ -333,7 +333,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
         common::ToSeconds(sensor_duration.value());
     kLocalSlamInsertIntoSubmapFraction->Set(insert_into_submap_fraction);
   }
-  ///Õû¸öÏß³ÌÆÀ·Ö
+  ///æ•´ä¸ªçº¿ç¨‹è¯„åˆ†
   const auto wall_time = std::chrono::steady_clock::now();
   if (last_wall_time_.has_value()) {
     const auto wall_time_duration = wall_time - last_wall_time_.value();
@@ -343,7 +343,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
                                    common::ToSeconds(wall_time_duration));
     }
   }
-  ///¸ß¾«¶ÈcpuÊ±¼ä
+  ///é«˜ç²¾åº¦cpuæ—¶é—´
   const double thread_cpu_time_seconds = common::GetThreadCpuTimeSeconds();
   if (last_thread_cpu_time_seconds_.has_value()) {
     const double thread_cpu_duration_seconds =
@@ -380,7 +380,7 @@ LocalTrajectoryBuilder3D::InsertIntoSubmap(
     const sensor::PointCloud& low_resolution_point_cloud_in_tracking,
     const transform::Rigid3d& pose_estimate,
     const Eigen::Quaterniond& gravity_alignment) {
-  ///ÅĞ¶ÏÁ½Ö¡±ä»»²î¾àÊÇ·ñ×ã¹»´ó(×ÜÖ¡Êı>1 Ê±¼ä²î<=Ê±¼ä¼ä¸ôãĞÖµ Æ½ÒÆÎ»×Ë<=Æ½ÒÆãĞÖµ Ğı×ª²î¾à<=Ğı×ªãĞÖµ) ×ã¹»´óÎªfalse
+  ///åˆ¤æ–­ä¸¤å¸§å˜æ¢å·®è·æ˜¯å¦è¶³å¤Ÿå¤§(æ€»å¸§æ•°>1 æ—¶é—´å·®<=æ—¶é—´é—´éš”é˜ˆå€¼ å¹³ç§»ä½å§¿<=å¹³ç§»é˜ˆå€¼ æ—‹è½¬å·®è·<=æ—‹è½¬é˜ˆå€¼) è¶³å¤Ÿå¤§ä¸ºfalse
   if (motion_filter_.IsSimilar(time, pose_estimate)) {
     return nullptr;
   }

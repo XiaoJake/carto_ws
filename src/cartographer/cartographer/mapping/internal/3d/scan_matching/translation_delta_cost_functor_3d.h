@@ -26,13 +26,13 @@ namespace scan_matching {
 
 // Computes the cost of translating 'translation' to 'target_translation'.
 // Cost increases with the solution's distance from 'target_translation'.
-///¼ÆËã½«¡°Æ½ÒÆ¡±×ª»»Îª¡°Ä¿±êÆ½ÒÆ¡±µÄ³É±¾¡£Ëæ×Å½â¾ö·½°¸Óë¡°Ä¿±ê¡±µÄ¾àÀëÔö¼Ó£¬³É±¾Ôö¼Ó
+///è®¡ç®—å°†â€œå¹³ç§»â€è½¬æ¢ä¸ºâ€œç›®æ ‡å¹³ç§»â€çš„æˆæœ¬ã€‚éšç€è§£å†³æ–¹æ¡ˆä¸â€œç›®æ ‡â€çš„è·ç¦»å¢åŠ ï¼Œæˆæœ¬å¢åŠ 
 class TranslationDeltaCostFunctor3D {
  public:
-    ///³ß¶ÈÒò×Ó Ğı×ª
+    ///å°ºåº¦å› å­ æ—‹è½¬
   static ceres::CostFunction* CreateAutoDiffCostFunction(
       const double scaling_factor, const Eigen::Vector3d& target_translation) {
-      ///¾ßÌåÊ¹ÓÃµÄcostfunctionÀà ²Ğ²îÎ¬¶È ¶¥µãÎ¬¶È
+      ///å…·ä½“ä½¿ç”¨çš„costfunctionç±» æ®‹å·®ç»´åº¦ é¡¶ç‚¹ç»´åº¦
     return new ceres::AutoDiffCostFunction<TranslationDeltaCostFunctor3D,
                                            3 /* residuals */,
                                            3 /* translation variables */>(
@@ -62,7 +62,7 @@ class TranslationDeltaCostFunctor3D {
       const TranslationDeltaCostFunctor3D&) = delete;
 
   const double scaling_factor_;
-  ///³õÊ¼Î»×Ë
+  ///åˆå§‹ä½å§¿
   const double x_;
   const double y_;
   const double z_;

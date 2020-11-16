@@ -20,32 +20,32 @@ namespace cartographer {
 namespace mapping {
 namespace optimization {
 
-///½«Î»×Ë×ª»¯Îª½á¹¹Ìå
+///å°†ä½å§¿è½¬åŒ–ä¸ºç»“æ„ä½“
 CeresPose::Data FromPose(const transform::Rigid3d& pose) {
-    ///std::arrayµÄ¹¹Ôì·½Ê½ºÍÊı×éÏàÍ¬
+    ///std::arrayçš„æ„é€ æ–¹å¼å’Œæ•°ç»„ç›¸åŒ
   return CeresPose::Data{{{pose.translation().x(), pose.translation().y(),
                            pose.translation().z()}},
                          {{pose.rotation().w(), pose.rotation().x(),
                            pose.rotation().y(), pose.rotation().z()}}};
 }
 
-/// »ñÈ¡Î»×Ë ÏòceresÎÊÌâÖĞÌí¼Ó¶¥µã
-/// ³õÊ¼Î»×Ë¹À¼Æ Æ½ÒÆÈ«¾Ö¾Ö²¿Î¬¶È×ª»»Àà Ğı×ªÈ«¾Ö¾Ö²¿Î¬¶È×ª»»Àà ceresÎÊÌâ
+/// è·å–ä½å§¿ å‘ceresé—®é¢˜ä¸­æ·»åŠ é¡¶ç‚¹
+/// åˆå§‹ä½å§¿ä¼°è®¡ å¹³ç§»å…¨å±€å±€éƒ¨ç»´åº¦è½¬æ¢ç±» æ—‹è½¬å…¨å±€å±€éƒ¨ç»´åº¦è½¬æ¢ç±» ceresé—®é¢˜
 CeresPose::CeresPose(
     const transform::Rigid3d& pose,
     std::unique_ptr<ceres::LocalParameterization> translation_parametrization,
     std::unique_ptr<ceres::LocalParameterization> rotation_parametrization,
     ceres::Problem* problem)
     : data_(std::make_shared<CeresPose::Data>(FromPose(pose))) {
-    /// (unique_ptr).release() µ÷ÓÃrelease »áÇĞ¶Ïunique_ptr ºÍËüÔ­À´¹ÜÀíµÄ¶ÔÏóµÄÁªÏµ¡£
-    /// release ·µ»ØµÄÖ¸ÕëÍ¨³£±»ÓÃÀ´³õÊ¼»¯ÁíÒ»¸öÖÇÄÜÖ¸Õë»ò¸øÁíÒ»¸öÖÇÄÜÖ¸Õë¸³Öµ¡£
+    /// (unique_ptr).release() è°ƒç”¨release ä¼šåˆ‡æ–­unique_ptr å’Œå®ƒåŸæ¥ç®¡ç†çš„å¯¹è±¡çš„è”ç³»ã€‚
+    /// release è¿”å›çš„æŒ‡é’ˆé€šå¸¸è¢«ç”¨æ¥åˆå§‹åŒ–å¦ä¸€ä¸ªæ™ºèƒ½æŒ‡é’ˆæˆ–ç»™å¦ä¸€ä¸ªæ™ºèƒ½æŒ‡é’ˆèµ‹å€¼ã€‚
   problem->AddParameterBlock(data_->translation.data(), 3,
                              translation_parametrization.release());
   problem->AddParameterBlock(data_->rotation.data(), 4,
                              rotation_parametrization.release());
 }
 
-///½«data_ÖĞµÄÊı¾İ×ª»¯ÎªRigidÎ»×Ë
+///å°†data_ä¸­çš„æ•°æ®è½¬åŒ–ä¸ºRigidä½å§¿
 const transform::Rigid3d CeresPose::ToRigid() const {
   return transform::Rigid3d::FromArrays(data_->rotation, data_->translation);
 }

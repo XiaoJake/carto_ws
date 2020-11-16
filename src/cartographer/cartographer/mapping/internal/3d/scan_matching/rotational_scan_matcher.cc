@@ -32,12 +32,12 @@ constexpr float kMinDistance = 0.2f;
 constexpr float kMaxDistance = 0.9f;
 constexpr float kSliceHeight = 0.2f;
 
-///Ö±·½Í¼ÖĞ¸Ã½Ç¶ÈµÄÀëÉ¢µ¥ÔªÖµ +value
+///ç›´æ–¹å›¾ä¸­è¯¥è§’åº¦çš„ç¦»æ•£å•å…ƒå€¼ +value
 void AddValueToHistogram(float angle, const float value,
                          Eigen::VectorXf* histogram) {
   // Map the angle to [0, pi), i.e. a vector and its inverse are considered to
   // represent the same angle.
-  ///½Ç¶È [0,1]
+  ///è§’åº¦ [0,1]
   while (angle > static_cast<float>(M_PI)) {
     angle -= static_cast<float>(M_PI);
   }
@@ -51,7 +51,7 @@ void AddValueToHistogram(float angle, const float value,
   (*histogram)(bucket) += value;
 }
 
-///¼ÆËãµãÔÆµÄÖĞĞÄ
+///è®¡ç®—ç‚¹äº‘çš„ä¸­å¿ƒ
 Eigen::Vector3f ComputeCentroid(const sensor::PointCloud& slice) {
   CHECK(!slice.empty());
   Eigen::Vector3f sum = Eigen::Vector3f::Zero();
@@ -61,8 +61,8 @@ Eigen::Vector3f ComputeCentroid(const sensor::PointCloud& slice) {
   return sum / static_cast<float>(slice.size());
 }
 
-///°²½Ç¶ÈÅÅĞòºÃµÄ²ãÆ¬ Ğı×ªÖ±·½Í¼
-///ÏòÖ±·½Í¼ÄÚÌí¼Ó¸Ã²ãÆ¬µÄvalue
+///å®‰è§’åº¦æ’åºå¥½çš„å±‚ç‰‡ æ—‹è½¬ç›´æ–¹å›¾
+///å‘ç›´æ–¹å›¾å†…æ·»åŠ è¯¥å±‚ç‰‡çš„value
 void AddPointCloudSliceToHistogram(const sensor::PointCloud& slice,
                                    Eigen::VectorXf* const histogram) {
   if (slice.empty()) {
@@ -72,14 +72,14 @@ void AddPointCloudSliceToHistogram(const sensor::PointCloud& slice,
   // point cloud. If it is orthogonal to the angle we compute between points, we
   // will add the angle between points to the histogram with the maximum weight.
   // This is to reject, e.g., the angles observed on the ceiling and floor.
-  const Eigen::Vector3f centroid = ComputeCentroid(slice); ///²ãÆ¬ÖĞĞÄ
-  Eigen::Vector3f last_point_position = slice.front().position; ///²ãÆ¬ÖĞÉÏÒ»¸öµã
+  const Eigen::Vector3f centroid = ComputeCentroid(slice); ///å±‚ç‰‡ä¸­å¿ƒ
+  Eigen::Vector3f last_point_position = slice.front().position; ///å±‚ç‰‡ä¸­ä¸Šä¸€ä¸ªç‚¹
   for (const sensor::RangefinderPoint& point : slice) {
-    const Eigen::Vector2f delta = ///¸ÃµãºÍÉÏÒ»¸öµãµÄÔÚ²ãÆ¬ÄÚµÄ²î
+    const Eigen::Vector2f delta = ///è¯¥ç‚¹å’Œä¸Šä¸€ä¸ªç‚¹çš„åœ¨å±‚ç‰‡å†…çš„å·®
         (point.position - last_point_position).head<2>();
-    const Eigen::Vector2f direction = (point.position - centroid).head<2>(); ///¸Ãµã·½Ïò
+    const Eigen::Vector2f direction = (point.position - centroid).head<2>(); ///è¯¥ç‚¹æ–¹å‘
     const float distance = delta.norm();
-    ///Ö»ÓĞÀïÖĞĞÄ×ã¹»Ô¶µÄµã ÇÒÇ°ºó×ã¹»Ô¶µÄµã²Å¼ÆËãÖ±·½Í¼
+    ///åªæœ‰é‡Œä¸­å¿ƒè¶³å¤Ÿè¿œçš„ç‚¹ ä¸”å‰åè¶³å¤Ÿè¿œçš„ç‚¹æ‰è®¡ç®—ç›´æ–¹å›¾
     if (distance < kMinDistance || direction.norm() < kMinDistance) {
       continue;
     }
@@ -87,11 +87,11 @@ void AddPointCloudSliceToHistogram(const sensor::PointCloud& slice,
       last_point_position = point.position;
       continue;
     }
-    ///1-cos<delta,direction> µãÔÆÇ°ºó·½ÏòºÍÖĞĞÄ·½ÏòÏàËÆ µÃ·ÖµÍ
+    ///1-cos<delta,direction> ç‚¹äº‘å‰åæ–¹å‘å’Œä¸­å¿ƒæ–¹å‘ç›¸ä¼¼ å¾—åˆ†ä½
     const float angle = common::atan2(delta);
     const float value = std::max(
         0.f, 1.f - std::abs(delta.normalized().dot(direction.normalized())));
-    ///Ö±·½Í¼ÖĞ¸Ã½Ç¶ÈµÄÀëÉ¢µ¥ÔªÖµ +value
+    ///ç›´æ–¹å›¾ä¸­è¯¥è§’åº¦çš„ç¦»æ•£å•å…ƒå€¼ +value
     AddValueToHistogram(angle, value, histogram);
   }
 }
@@ -99,7 +99,7 @@ void AddPointCloudSliceToHistogram(const sensor::PointCloud& slice,
 // A function to sort the points in each slice by angle around the centroid.
 // This is because the returns from different rangefinders are interleaved in
 // the data.
-///½«Æ¬²ãµãÔÆ×ª½Ç´ÓĞ¡µ½´óÅÅĞò ×ª½ÇÊÇÃ¿Ò»¸öµãÔÚ¶şÎ¬Æ½ÃæÏà¶ÔÓë¸Ã²ãÆ¬ÖĞĞÄºÍxÖáµÄ¼Ğ½Ç
+///å°†ç‰‡å±‚ç‚¹äº‘è½¬è§’ä»å°åˆ°å¤§æ’åº è½¬è§’æ˜¯æ¯ä¸€ä¸ªç‚¹åœ¨äºŒç»´å¹³é¢ç›¸å¯¹ä¸è¯¥å±‚ç‰‡ä¸­å¿ƒå’Œxè½´çš„å¤¹è§’
 sensor::PointCloud SortSlice(const sensor::PointCloud& slice) {
   struct SortableAnglePointPair {
     bool operator<(const SortableAnglePointPair& rhs) const {
@@ -109,13 +109,13 @@ sensor::PointCloud SortSlice(const sensor::PointCloud& slice) {
     float angle;
     sensor::RangefinderPoint point;
   };
-  const Eigen::Vector3f centroid = ComputeCentroid(slice); ///¼ÆËã²ãÆ¬µÄÖĞĞÄ
+  const Eigen::Vector3f centroid = ComputeCentroid(slice); ///è®¡ç®—å±‚ç‰‡çš„ä¸­å¿ƒ
   std::vector<SortableAnglePointPair> by_angle;
   by_angle.reserve(slice.size());
-  ///²ãÆ¬ÖĞÃ¿Ò»¸öµã
+  ///å±‚ç‰‡ä¸­æ¯ä¸€ä¸ªç‚¹
   for (const sensor::RangefinderPoint& point : slice) {
     const Eigen::Vector2f delta = (point.position - centroid).head<2>();
-    ///¸ÃµãÀïÖĞĞÄÌ«½ü
+    ///è¯¥ç‚¹é‡Œä¸­å¿ƒå¤ªè¿‘
     if (delta.norm() < kMinDistance) {
       continue;
     }
@@ -129,8 +129,8 @@ sensor::PointCloud SortSlice(const sensor::PointCloud& slice) {
   return result;
 }
 
-///Æ¥Åäµ±Ç°Ö¡ºÍ¾Ö²¿µØÍ¼µÄÖ±·½Í¼
-///·µ»ØÁ½¸öÖ±·½Í¼µÄ¼Ğ½ÇµÄcosÖµ
+///åŒ¹é…å½“å‰å¸§å’Œå±€éƒ¨åœ°å›¾çš„ç›´æ–¹å›¾
+///è¿”å›ä¸¤ä¸ªç›´æ–¹å›¾çš„å¤¹è§’çš„coså€¼
 float MatchHistograms(const Eigen::VectorXf& submap_histogram,
                       const Eigen::VectorXf& scan_histogram) {
   // We compute the dot product of normalized histograms as a measure of
@@ -142,7 +142,7 @@ float MatchHistograms(const Eigen::VectorXf& submap_histogram,
     return 1.f;
   }
   /*
-   * a¡¤b = |a|*|b|*cos<a,b>
+   * aÂ·b = |a|*|b|*cos<a,b>
    */
   return submap_histogram.dot(scan_histogram) / normalization;
 }
@@ -154,18 +154,18 @@ RotationalScanMatcher::RotationalScanMatcher(const Eigen::VectorXf* histogram)
 
 // Rotates the given 'histogram' by the given 'angle'. This might lead to
 // rotations of a fractional bucket which is handled by linearly interpolating.
-/**Ö±·½Í¼µÄ¼ÆËã
- * Ê×ÏÈ½«µãÔÆÔÚÉî¶È·½ÏòÉÏ·Ö²ã ¶ÔÃ¿Ò»²ã¼ÆËãµãÔÆÖĞĞÄ Ã¿Ò»²ãµãÔÆÓÃË®Æ½½Ç¶ÈÀëÉ¢µ½Ö±·½Í¼ÖĞ
- * 1-cos<delta,direction> µãÔÆÇ°ºó·½ÏòºÍÖĞĞÄ·½ÏòÏàËÆ µÃ·ÖµÍ
- * ¼ÆËãÃ¿Ò»¸öµãµÄµÃ·Ö ·ÅÈëÖ±·½Í¼ÖĞ
+/**ç›´æ–¹å›¾çš„è®¡ç®—
+ * é¦–å…ˆå°†ç‚¹äº‘åœ¨æ·±åº¦æ–¹å‘ä¸Šåˆ†å±‚ å¯¹æ¯ä¸€å±‚è®¡ç®—ç‚¹äº‘ä¸­å¿ƒ æ¯ä¸€å±‚ç‚¹äº‘ç”¨æ°´å¹³è§’åº¦ç¦»æ•£åˆ°ç›´æ–¹å›¾ä¸­
+ * 1-cos<delta,direction> ç‚¹äº‘å‰åæ–¹å‘å’Œä¸­å¿ƒæ–¹å‘ç›¸ä¼¼ å¾—åˆ†ä½
+ * è®¡ç®—æ¯ä¸€ä¸ªç‚¹çš„å¾—åˆ† æ”¾å…¥ç›´æ–¹å›¾ä¸­
  */
 
-/// ½«¸ø¶¨µÄ¡°Ö±·½Í¼¡±Ğı×ª¸ø¶¨µÄ¡°½Ç¶È¡±
-/// ÊäÈë: Ğı×ªÖ±·½Í¼ ½Ç¶È
-/// Êä³ö: Ğı×ªºóµÄÖ±·½Í¼
+/// å°†ç»™å®šçš„â€œç›´æ–¹å›¾â€æ—‹è½¬ç»™å®šçš„â€œè§’åº¦â€
+/// è¾“å…¥: æ—‹è½¬ç›´æ–¹å›¾ è§’åº¦
+/// è¾“å‡º: æ—‹è½¬åçš„ç›´æ–¹å›¾
 Eigen::VectorXf RotationalScanMatcher::RotateHistogram(
     const Eigen::VectorXf& histogram, const float angle) {
-  const float rotate_by_buckets = -angle * histogram.size() / M_PI; ///×Ü¹²Ğı×ª½Ç¶È
+  const float rotate_by_buckets = -angle * histogram.size() / M_PI; ///æ€»å…±æ—‹è½¬è§’åº¦
   int full_buckets = common::RoundToInt(rotate_by_buckets - 0.5f);
   const float fraction = rotate_by_buckets - full_buckets;
   while (full_buckets < 0) {
@@ -182,38 +182,38 @@ Eigen::VectorXf RotationalScanMatcher::RotateHistogram(
          (1.f - fraction) * rotated_histogram_0;
 }
 
-///ÊÀ½çÎ»×ËĞı×ªºóµÄµãÔÆ(Ê¹ÓÃImu»ı·ÖĞı×ª) Ğı×ªÖ±·½Í¼
+///ä¸–ç•Œä½å§¿æ—‹è½¬åçš„ç‚¹äº‘(ä½¿ç”¨Imuç§¯åˆ†æ—‹è½¬) æ—‹è½¬ç›´æ–¹å›¾
 Eigen::VectorXf RotationalScanMatcher::ComputeHistogram(
     const sensor::PointCloud& point_cloud, const int histogram_size) {
   Eigen::VectorXf histogram = Eigen::VectorXf::Zero(histogram_size);
-  std::map<int, sensor::PointCloud> slices; ///map<Æ¬²ã,¸ÃÆ¬²ãÏÂµãÔÆ>
-  ///µãÔÆÖĞÃ¿Ò»¸öµã ¼ÆËãÃ¿Ò»¸öÆ¬²ãµÄµãÔÆ
+  std::map<int, sensor::PointCloud> slices; ///map<ç‰‡å±‚,è¯¥ç‰‡å±‚ä¸‹ç‚¹äº‘>
+  ///ç‚¹äº‘ä¸­æ¯ä¸€ä¸ªç‚¹ è®¡ç®—æ¯ä¸€ä¸ªç‰‡å±‚çš„ç‚¹äº‘
   for (const sensor::RangefinderPoint& point : point_cloud) {
     slices[common::RoundToInt(point.position.z() / kSliceHeight)].push_back(
         point);
   }
-  ///Ã¿Ò»¸öÆ¬²ã
+  ///æ¯ä¸€ä¸ªç‰‡å±‚
   for (const auto& slice : slices) {
-      ///SortSlice ½«Æ¬²ãµãÔÆ×ª½Ç´ÓĞ¡µ½´óÅÅĞò ×ª½ÇÊÇÃ¿Ò»¸öµãÔÚ¶şÎ¬Æ½ÃæÏà¶ÔÓë¸Ã²ãÆ¬ÖĞĞÄºÍxÖáµÄ¼Ğ½Ç
-      ///AddPointCloudSliceToHistogram ÏòÖ±·½Í¼ÄÚÌí¼Ó¸Ã²ãÆ¬µÄvalue
+      ///SortSlice å°†ç‰‡å±‚ç‚¹äº‘è½¬è§’ä»å°åˆ°å¤§æ’åº è½¬è§’æ˜¯æ¯ä¸€ä¸ªç‚¹åœ¨äºŒç»´å¹³é¢ç›¸å¯¹ä¸è¯¥å±‚ç‰‡ä¸­å¿ƒå’Œxè½´çš„å¤¹è§’
+      ///AddPointCloudSliceToHistogram å‘ç›´æ–¹å›¾å†…æ·»åŠ è¯¥å±‚ç‰‡çš„value
     AddPointCloudSliceToHistogram(SortSlice(slice.second), &histogram);
   }
   return histogram;
 }
 
-///ÊäÈë: Ö±·½Í¼ Ïà¶ÔÎ»×Ë ½Ç¶ÈËÑË÷ÁĞ±í
-///Êä³ö: Ã¿Ò»¸öËÑË÷½Ç¶ÈÖ±·½Í¼ÏòÁ¿ºÍ¾Ö²¿µØÍ¼Ö±·½Í¼ÏòÁ¿µÄ¼Ğ½ÇcosÖµ
+///è¾“å…¥: ç›´æ–¹å›¾ ç›¸å¯¹ä½å§¿ è§’åº¦æœç´¢åˆ—è¡¨
+///è¾“å‡º: æ¯ä¸€ä¸ªæœç´¢è§’åº¦ç›´æ–¹å›¾å‘é‡å’Œå±€éƒ¨åœ°å›¾ç›´æ–¹å›¾å‘é‡çš„å¤¹è§’coså€¼
 std::vector<float> RotationalScanMatcher::Match(
     const Eigen::VectorXf& histogram, const float initial_angle,
     const std::vector<float>& angles) const {
   std::vector<float> result;
   result.reserve(angles.size());
-  ///Ã¿Ò»¸öËÑË÷½Ç¶È
+  ///æ¯ä¸€ä¸ªæœç´¢è§’åº¦
   for (const float angle : angles) {
-      ////Ğı×ªĞı×ªÖ±·½Í¼
+      ////æ—‹è½¬æ—‹è½¬ç›´æ–¹å›¾
     const Eigen::VectorXf scan_histogram =
         RotateHistogram(histogram, initial_angle + angle);
-    ///¼ÆËãÁ½¸öÖ±·½Í¼ÏòÁ¿µÄ¼Ğ½ÇcosÖµ
+    ///è®¡ç®—ä¸¤ä¸ªç›´æ–¹å›¾å‘é‡çš„å¤¹è§’coså€¼
     result.push_back(MatchHistograms(*histogram_, scan_histogram));
   }
   return result;

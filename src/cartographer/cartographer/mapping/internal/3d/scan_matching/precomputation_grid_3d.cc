@@ -31,14 +31,14 @@ namespace {
 // C++11 defines that integer division rounds towards zero. For index math, we
 // actually need it to round towards negative infinity. Luckily bit shifts have
 // that property.
-///½«Ò»¸öÊı¾İ³ıÒÔ2
+///å°†ä¸€ä¸ªæ•°æ®é™¤ä»¥2
 inline int DivideByTwoRoundingTowardsNegativeInfinity(const int value) {
   return value >> 1;
 }
 
 // Computes the half resolution index corresponding to the full resolution
 // 'cell_index'.
-///½«3DĞòºÅÃ¿Ò»¸öÎ¬¶È¶¼³ıÒÔ2
+///å°†3Dåºå·æ¯ä¸€ä¸ªç»´åº¦éƒ½é™¤ä»¥2
 Eigen::Array3i CellIndexAtHalfResolution(const Eigen::Array3i& cell_index) {
   return Eigen::Array3i(
       DivideByTwoRoundingTowardsNegativeInfinity(cell_index[0]),
@@ -48,41 +48,41 @@ Eigen::Array3i CellIndexAtHalfResolution(const Eigen::Array3i& cell_index) {
 
 }  // namespace
 
-///½«¸ÅÂÊÕ¤¸ñµØÍ¼ÓÃ0-255µÄÀëÉ¢¸ÅÂÊµØÍ¼±íÊ¾
+///å°†æ¦‚ç‡æ …æ ¼åœ°å›¾ç”¨0-255çš„ç¦»æ•£æ¦‚ç‡åœ°å›¾è¡¨ç¤º
 PrecomputationGrid3D ConvertToPrecomputationGrid(
     const HybridGrid& hybrid_grid) {
-  PrecomputationGrid3D result(hybrid_grid.resolution()); ///Ê¹ÓÃ¸ÅÂÊµØÍ¼¹¹ÔìÒ»¸öÓë¼ÆËãÍø¸ñ
-  ///¸ÅÂÊµØÍ¼ÄÚµÄÃ¿Ò»¸ö´¢´æµ¥Ôª
+  PrecomputationGrid3D result(hybrid_grid.resolution()); ///ä½¿ç”¨æ¦‚ç‡åœ°å›¾æ„é€ ä¸€ä¸ªä¸è®¡ç®—ç½‘æ ¼
+  ///æ¦‚ç‡åœ°å›¾å†…çš„æ¯ä¸€ä¸ªå‚¨å­˜å•å…ƒ
   for (auto it = HybridGrid::Iterator(hybrid_grid); !it.Done(); it.Next()) {
-    ///°Ñ¸ÅÂÊÕ¤¸ñÖĞµÄÍø¸ñµÄ¸ÅÂÊ ¹éÒ»»¯µ½0-255Ö®¼äµÄÕûÊı
+    ///æŠŠæ¦‚ç‡æ …æ ¼ä¸­çš„ç½‘æ ¼çš„æ¦‚ç‡ å½’ä¸€åŒ–åˆ°0-255ä¹‹é—´çš„æ•´æ•°
     const int cell_value = common::RoundToInt(
         (ValueToProbability(it.GetValue()) - kMinProbability) *
         (255.f / (kMaxProbability - kMinProbability)));
     CHECK_GE(cell_value, 0);
     CHECK_LE(cell_value, 255);
-    *result.mutable_value(it.GetCellIndex()) = cell_value; ///ĞŞ¸Ä×ª»¯ºóµÄÍø¸ñµÄÖµ
+    *result.mutable_value(it.GetCellIndex()) = cell_value; ///ä¿®æ”¹è½¬åŒ–åçš„ç½‘æ ¼çš„å€¼
   }
   return result;
 }
 
 /*
- * ÕâÀïÊ¹ÓÃµÄ½µ²ÉÑùÍø¸ñ,ÆäÕ¼ÓÃµÄ´¢´æ¿Õ¼äÒÀÈ»ºÍÔ­Ê¼Íø¸ñÏàÍ¬,ËùÒÔ¹¹ÔìÊ¹ÓÃµÄ·Ö±æÂÊÊÇÒ»ÑùµÄ.
- * Ö»ÊÇÔÚÄ³Ò»Éî¶ÈdepthÏÂ,±ß³¤Îª2^depth´¢´æµ¥ÔªµÄÕı·½ĞÎ´¢´æ¿Õ¼äÄÚ,Ö»ÓĞÒ»¸öÓĞ0-255Êı¾İ
- * ÇÒ¸ÃÊı¾İ´¢´æÔÚÉÏÒ»Íø¸ñÖĞÊÓÎª(0,0,0)µÄÎ»ÖÃ,ÆäËûÆß¸öÎ»ÖÃÃ»ÓĞÊı¾İ µü´úÆ÷ÔÚµü´úµÄÊ±ºò»á×Ô¶¯Ìø¹ı
- * Èç¹ûÉèÖÃÍø¸ñ½µ²ÉÑù ÔòĞèÒª°Ñ3DĞòºÅ³ıÒÔ2
+ * è¿™é‡Œä½¿ç”¨çš„é™é‡‡æ ·ç½‘æ ¼,å…¶å ç”¨çš„å‚¨å­˜ç©ºé—´ä¾ç„¶å’ŒåŸå§‹ç½‘æ ¼ç›¸åŒ,æ‰€ä»¥æ„é€ ä½¿ç”¨çš„åˆ†è¾¨ç‡æ˜¯ä¸€æ ·çš„.
+ * åªæ˜¯åœ¨æŸä¸€æ·±åº¦depthä¸‹,è¾¹é•¿ä¸º2^depthå‚¨å­˜å•å…ƒçš„æ­£æ–¹å½¢å‚¨å­˜ç©ºé—´å†…,åªæœ‰ä¸€ä¸ªæœ‰0-255æ•°æ®
+ * ä¸”è¯¥æ•°æ®å‚¨å­˜åœ¨ä¸Šä¸€ç½‘æ ¼ä¸­è§†ä¸º(0,0,0)çš„ä½ç½®,å…¶ä»–ä¸ƒä¸ªä½ç½®æ²¡æœ‰æ•°æ® è¿­ä»£å™¨åœ¨è¿­ä»£çš„æ—¶å€™ä¼šè‡ªåŠ¨è·³è¿‡
+ * å¦‚æœè®¾ç½®ç½‘æ ¼é™é‡‡æ · åˆ™éœ€è¦æŠŠ3Dåºå·é™¤ä»¥2
  */
 
-///ÉÏÒ»Éî¶ÈÍø¸ñ ÊÇ·ñ½µµÍ·Ö±æÂÊ Ïà¶ÔÓÚÔ­Ê¼Íø¸ñµÄÒÆ¶¯
-///¸ù¾İÉÏÒ»Éî¶ÈÍø¸ñ ¼ÆËãÏÂÒ»Éî¶ÈÍø¸ñ Ã¿¸öµ¥ÔªµÄÖµ
+///ä¸Šä¸€æ·±åº¦ç½‘æ ¼ æ˜¯å¦é™ä½åˆ†è¾¨ç‡ ç›¸å¯¹äºåŸå§‹ç½‘æ ¼çš„ç§»åŠ¨
+///æ ¹æ®ä¸Šä¸€æ·±åº¦ç½‘æ ¼ è®¡ç®—ä¸‹ä¸€æ·±åº¦ç½‘æ ¼ æ¯ä¸ªå•å…ƒçš„å€¼
 PrecomputationGrid3D PrecomputeGrid(const PrecomputationGrid3D& grid,
                                     const bool half_resolution,
                                     const Eigen::Array3i& shift) {
-  PrecomputationGrid3D result(grid.resolution()); ///·Ö±æÂÊµÈÓÚÉÏÒ»Éî¶È0-255Íø¸ñµÄ·Ö±æÂÊ
-  ///ÉÏÒ»Éî¶È0-255Íø¸ñµÄÃ¿Ò»¸ö´¢´æµ¥Ôª
+  PrecomputationGrid3D result(grid.resolution()); ///åˆ†è¾¨ç‡ç­‰äºä¸Šä¸€æ·±åº¦0-255ç½‘æ ¼çš„åˆ†è¾¨ç‡
+  ///ä¸Šä¸€æ·±åº¦0-255ç½‘æ ¼çš„æ¯ä¸€ä¸ªå‚¨å­˜å•å…ƒ
   for (auto it = PrecomputationGrid3D::Iterator(grid); !it.Done(); it.Next()) {
-      ///½«Ò»¸ö´¢´æµ¥Ôª¿´×ö(0,0,0) ½«ËüºÍÖÜÎ§µÄ(0,0,0),(0,0,1)...(1,1,1) 8¸öµã±È½Ï
-      ///ÕÒµ½Õâ°Ë¸öµãÖĞ×î´óµÄ ×÷Îª¸ÃÍø¸ñµÄÖµ
-      ///Èç¹ûĞèÒª½µµÍ·Ö±æÂÊ Ôò½«¸Ãµ¥ÔªµÄ3DĞòºÅÃ¿Ò»¸öÎ¬¶È¶¼³ıÒÔ2
+      ///å°†ä¸€ä¸ªå‚¨å­˜å•å…ƒçœ‹åš(0,0,0) å°†å®ƒå’Œå‘¨å›´çš„(0,0,0),(0,0,1)...(1,1,1) 8ä¸ªç‚¹æ¯”è¾ƒ
+      ///æ‰¾åˆ°è¿™å…«ä¸ªç‚¹ä¸­æœ€å¤§çš„ ä½œä¸ºè¯¥ç½‘æ ¼çš„å€¼
+      ///å¦‚æœéœ€è¦é™ä½åˆ†è¾¨ç‡ åˆ™å°†è¯¥å•å…ƒçš„3Dåºå·æ¯ä¸€ä¸ªç»´åº¦éƒ½é™¤ä»¥2
     for (int i = 0; i != 8; ++i) {
       // We use this value to update 8 values in the resulting grid, at
       // position (x - {0, 'shift'}, y - {0, 'shift'}, z - {0, 'shift'}).
@@ -92,7 +92,7 @@ PrecomputationGrid3D PrecomputeGrid(const PrecomputationGrid3D& grid,
           it.GetCellIndex() - shift * PrecomputationGrid3D::GetOctant(i);
       auto* const cell_value = result.mutable_value(
           half_resolution ? CellIndexAtHalfResolution(cell_index) : cell_index);
-      ///Ò»¸öµ¥ÔªÁÙ½üµÄ8¸öµ¥ÔªÖ»±£ÁôÒ»¸ö×î´óÖµ
+      ///ä¸€ä¸ªå•å…ƒä¸´è¿‘çš„8ä¸ªå•å…ƒåªä¿ç•™ä¸€ä¸ªæœ€å¤§å€¼
       *cell_value = std::max(it.GetValue(), *cell_value);
     }
   }

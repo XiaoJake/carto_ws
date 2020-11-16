@@ -77,9 +77,9 @@ class Submap3D : public Submap {
  private:
   void UpdateFromProto(const proto::Submap3D& submap_3d);
 
-  std::unique_ptr<HybridGrid> high_resolution_hybrid_grid_; ///¸Ã¾Ö²¿µØÍ¼¸ß·Ö±æÂÊÕ¤¸ñ
-  std::unique_ptr<HybridGrid> low_resolution_hybrid_grid_; ///¸Ã¾Ö²¿µØÍ¼µÍ·Ö±æÂÊÕ¤¸ñ
-  Eigen::VectorXf rotational_scan_matcher_histogram_; ///Ðý×ªÖ±·½Í¼
+  std::unique_ptr<HybridGrid> high_resolution_hybrid_grid_; ///è¯¥å±€éƒ¨åœ°å›¾é«˜åˆ†è¾¨çŽ‡æ …æ ¼
+  std::unique_ptr<HybridGrid> low_resolution_hybrid_grid_; ///è¯¥å±€éƒ¨åœ°å›¾ä½Žåˆ†è¾¨çŽ‡æ …æ ¼
+  Eigen::VectorXf rotational_scan_matcher_histogram_; ///æ—‹è½¬ç›´æ–¹å›¾
 };
 
 // The first active submap will be created on the insertion of the first range
@@ -116,7 +116,7 @@ class ActiveSubmaps3D {
                  int rotational_scan_matcher_histogram_size);
 
   const proto::SubmapsOptions3D options_;
-  std::vector<std::shared_ptr<Submap3D>> submaps_; ///¾Ö²¿µØÍ¼ÁÐ±í
+  std::vector<std::shared_ptr<Submap3D>> submaps_; ///å±€éƒ¨åœ°å›¾åˆ—è¡¨
   RangeDataInserter3D range_data_inserter_;
 };
 

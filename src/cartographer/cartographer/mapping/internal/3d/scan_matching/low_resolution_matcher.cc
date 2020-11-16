@@ -20,15 +20,15 @@ namespace cartographer {
 namespace mapping {
 namespace scan_matching {
 
-///µ×·Ö±æÂÊÆ¥ÅäÆ÷
-///ÊäÈë: µÍ·Ö±æÂÊ¸ñÕ¤µØÍ¼ µÍ·Ö±æÂÊµãÔÆ
-///Êä³ö: ĞÎ²ÎÊÇposeµÄº¯Êı(Ê¹ÓÃÎ»×Ë±ä»»µãÔÆÖĞµÄµã ²¢¶ÔÔÚµÍ·Ö±æÂÊÕ¤¸ñµØÍ¼ÏÂËùÓĞÓĞ¸ÅÂÊµÄµãÇóºÍ ×÷ÎªµÍ·Ö±æÂÊÆ¥ÅäµÃ·Ö)
+///åº•åˆ†è¾¨ç‡åŒ¹é…å™¨
+///è¾“å…¥: ä½åˆ†è¾¨ç‡æ ¼æ …åœ°å›¾ ä½åˆ†è¾¨ç‡ç‚¹äº‘
+///è¾“å‡º: å½¢å‚æ˜¯poseçš„å‡½æ•°(ä½¿ç”¨ä½å§¿å˜æ¢ç‚¹äº‘ä¸­çš„ç‚¹ å¹¶å¯¹åœ¨ä½åˆ†è¾¨ç‡æ …æ ¼åœ°å›¾ä¸‹æ‰€æœ‰æœ‰æ¦‚ç‡çš„ç‚¹æ±‚å’Œ ä½œä¸ºä½åˆ†è¾¨ç‡åŒ¹é…å¾—åˆ†)
 std::function<float(const transform::Rigid3f&)> CreateLowResolutionMatcher(
     const HybridGrid* low_resolution_grid, const sensor::PointCloud* points) {
-    ///ÄäÃûº¯Êı ÒşÊ½°²Öµ²¶»ñpose
+    ///åŒ¿åå‡½æ•° éšå¼å®‰å€¼æ•è·pose
   return [=](const transform::Rigid3f& pose) {
     float score = 0.f;
-    ///Ê¹ÓÃÎ»×Ë±ä»»µãÔÆÖĞµÄµã ²¢¶ÔÔÚµÍ·Ö±æÂÊÕ¤¸ñµØÍ¼ÏÂËùÓĞÓĞ¸ÅÂÊµÄµãÇóºÍ ×÷ÎªµÍ·Ö±æÂÊÆ¥ÅäµÃ·Ö
+    ///ä½¿ç”¨ä½å§¿å˜æ¢ç‚¹äº‘ä¸­çš„ç‚¹ å¹¶å¯¹åœ¨ä½åˆ†è¾¨ç‡æ …æ ¼åœ°å›¾ä¸‹æ‰€æœ‰æœ‰æ¦‚ç‡çš„ç‚¹æ±‚å’Œ ä½œä¸ºä½åˆ†è¾¨ç‡åŒ¹é…å¾—åˆ†
     for (const sensor::RangefinderPoint& point :
          sensor::TransformPointCloud(*points, pose)) {
       // TODO(zhengj, whess): Interpolate the Grid to get better score.

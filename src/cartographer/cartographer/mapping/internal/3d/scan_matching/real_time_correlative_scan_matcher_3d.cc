@@ -31,21 +31,21 @@ RealTimeCorrelativeScanMatcher3D::RealTimeCorrelativeScanMatcher3D(
     const proto::RealTimeCorrelativeScanMatcherOptions& options)
     : options_(options) {}
 
-//³õÊ¼Î»×Ë µãÔÆ ¸ÅÂÊ¸ñÕ¤µØÍ¼ ×îÓÅÎ»×Ë¹À¼Æ(·µ»Ø)
+//åˆå§‹ä½å§¿ ç‚¹äº‘ æ¦‚ç‡æ ¼æ …åœ°å›¾ æœ€ä¼˜ä½å§¿ä¼°è®¡(è¿”å›)
 float RealTimeCorrelativeScanMatcher3D::Match(
     const transform::Rigid3d& initial_pose_estimate,
     const sensor::PointCloud& point_cloud, const HybridGrid& hybrid_grid,
     transform::Rigid3d* pose_estimate) const {
   CHECK(pose_estimate != nullptr);
-  float best_score = -1.f; //×îÓÅµÃ·Ö
-  //GenerateExhaustiveSearchTransforms ¸ù¾İ½Ç¶ÈËÑË÷´°ºÍÏßĞÔËÑË÷´° ¹¹ÔìËùÓĞ¿ÉÄÜµÄÎ»×Ë
-  //¶ÔÓÚÃ¿Ò»¸ö¿ÉÄÜµÄÎ»×Ë
+  float best_score = -1.f; //æœ€ä¼˜å¾—åˆ†
+  //GenerateExhaustiveSearchTransforms æ ¹æ®è§’åº¦æœç´¢çª—å’Œçº¿æ€§æœç´¢çª— æ„é€ æ‰€æœ‰å¯èƒ½çš„ä½å§¿
+  //å¯¹äºæ¯ä¸€ä¸ªå¯èƒ½çš„ä½å§¿
   for (const transform::Rigid3f& transform : GenerateExhaustiveSearchTransforms(
            hybrid_grid.resolution(), point_cloud)) {
     const transform::Rigid3f candidate =
-        initial_pose_estimate.cast<float>() * transform; //Ã¿Ò»¸öºòÑ¡Î»×ËµÄÊÀ½çÎ»×Ë
-    //¸ù¾İºòÑ¡Î»×Ë±ä»»ºóµÄµãÔÆ ¼ÆËãÕâÑù±ä»»ºóÔ­¸ñÕ¤µØÍ¼±»Õ¼ÓÃµÄ¸ÅÂÊ È¡Æ½¾ù³ËÉÏ¸ºÖ¸ÊıÈ¨ÖØ¼´ÎªµÃ·Ö
-    //Î»×ËºÍ½Ç¶È±ä»»Ô½´ó µÃ·ÖÔ½µ×
+        initial_pose_estimate.cast<float>() * transform; //æ¯ä¸€ä¸ªå€™é€‰ä½å§¿çš„ä¸–ç•Œä½å§¿
+    //æ ¹æ®å€™é€‰ä½å§¿å˜æ¢åçš„ç‚¹äº‘ è®¡ç®—è¿™æ ·å˜æ¢ååŸæ ¼æ …åœ°å›¾è¢«å ç”¨çš„æ¦‚ç‡ å–å¹³å‡ä¹˜ä¸Šè´ŸæŒ‡æ•°æƒé‡å³ä¸ºå¾—åˆ†
+    //ä½å§¿å’Œè§’åº¦å˜æ¢è¶Šå¤§ å¾—åˆ†è¶Šåº•
     const float score = ScoreCandidate(
         hybrid_grid, sensor::TransformPointCloud(point_cloud, candidate),
         transform);
@@ -57,33 +57,33 @@ float RealTimeCorrelativeScanMatcher3D::Match(
   return best_score;
 }
 
-//¾«¶È µãÔÆ
-//¸ù¾İ½Ç¶ÈËÑË÷´°ºÍÏßĞÔËÑË÷´° ¹¹ÔìËùÓĞ¿ÉÄÜµÄÎ»×Ë
+//ç²¾åº¦ ç‚¹äº‘
+//æ ¹æ®è§’åº¦æœç´¢çª—å’Œçº¿æ€§æœç´¢çª— æ„é€ æ‰€æœ‰å¯èƒ½çš„ä½å§¿
 std::vector<transform::Rigid3f>
 RealTimeCorrelativeScanMatcher3D::GenerateExhaustiveSearchTransforms(
     const float resolution, const sensor::PointCloud& point_cloud) const {
-  std::vector<transform::Rigid3f> result; //Î»×ËËÑË÷ÁĞ±í
+  std::vector<transform::Rigid3f> result; //ä½å§¿æœç´¢åˆ—è¡¨
   const int linear_window_size =
-      common::RoundToInt(options_.linear_search_window() / resolution); //ÏßĞÔ´°¿Ú´óĞ¡
+      common::RoundToInt(options_.linear_search_window() / resolution); //çº¿æ€§çª—å£å¤§å°
   // We set this value to something on the order of resolution to make sure that
   // the std::acos() below is defined.
-  float max_scan_range = 3.f * resolution; //×î´óËÑË÷·¶Î§
+  float max_scan_range = 3.f * resolution; //æœ€å¤§æœç´¢èŒƒå›´
   for (const sensor::RangefinderPoint& point : point_cloud) {
     const float range = point.position.norm();
     max_scan_range = std::max(range, max_scan_range);
   }
   const float kSafetyMargin = 1.f - 1e-3f;
-  const float angular_step_size = //½Ç¶ÈËÑË÷²½³¤
+  const float angular_step_size = //è§’åº¦æœç´¢æ­¥é•¿
       kSafetyMargin * std::acos(1.f - common::Pow2(resolution) /
                                           (2.f * common::Pow2(max_scan_range)));
-  const int angular_window_size = //½Ç¶ÈËÑË÷´ÎÊı
+  const int angular_window_size = //è§’åº¦æœç´¢æ¬¡æ•°
       common::RoundToInt(options_.angular_search_window() / angular_step_size);
-  //¹¹ÔìËùÓĞ¿ÉÄÜµÄÎ»×Ë
-  //Ã¿Ò»¸öÆ½ÒÆÎ»×Ë
+  //æ„é€ æ‰€æœ‰å¯èƒ½çš„ä½å§¿
+  //æ¯ä¸€ä¸ªå¹³ç§»ä½å§¿
   for (int z = -linear_window_size; z <= linear_window_size; ++z) {
     for (int y = -linear_window_size; y <= linear_window_size; ++y) {
       for (int x = -linear_window_size; x <= linear_window_size; ++x) {
-          //Ã¿Ò»¸ö½Ç¶ÈĞı×ª
+          //æ¯ä¸€ä¸ªè§’åº¦æ—‹è½¬
         for (int rz = -angular_window_size; rz <= angular_window_size; ++rz) {
           for (int ry = -angular_window_size; ry <= angular_window_size; ++ry) {
             for (int rx = -angular_window_size; rx <= angular_window_size;
@@ -104,23 +104,23 @@ RealTimeCorrelativeScanMatcher3D::GenerateExhaustiveSearchTransforms(
   return result;
 }
 
-//¸ñÕ¤µØÍ¼ ÊÀ½çµ±Ç°ºòÑ¡µãÔÆ ºòÑ¡Ç°ºóÎ»×Ë±ä»»
-//¸ù¾İºòÑ¡Î»×Ë±ä»»ºóµÄµãÔÆ ¼ÆËãÕâÑù±ä»»ºóÔ­¸ñÕ¤µØÍ¼±»Õ¼ÓÃµÄ¸ÅÂÊ È¡Æ½¾ù³ËÉÏ¸ºÖ¸ÊıÈ¨ÖØ¼´ÎªµÃ·Ö
-//Î»×ËºÍ½Ç¶È±ä»»Ô½´ó µÃ·ÖÔ½µ×
+//æ ¼æ …åœ°å›¾ ä¸–ç•Œå½“å‰å€™é€‰ç‚¹äº‘ å€™é€‰å‰åä½å§¿å˜æ¢
+//æ ¹æ®å€™é€‰ä½å§¿å˜æ¢åçš„ç‚¹äº‘ è®¡ç®—è¿™æ ·å˜æ¢ååŸæ ¼æ …åœ°å›¾è¢«å ç”¨çš„æ¦‚ç‡ å–å¹³å‡ä¹˜ä¸Šè´ŸæŒ‡æ•°æƒé‡å³ä¸ºå¾—åˆ†
+//ä½å§¿å’Œè§’åº¦å˜æ¢è¶Šå¤§ å¾—åˆ†è¶Šåº•
 float RealTimeCorrelativeScanMatcher3D::ScoreCandidate(
     const HybridGrid& hybrid_grid,
     const sensor::PointCloud& transformed_point_cloud,
     const transform::Rigid3f& transform) const {
-  float score = 0.f; //µÃ·Ö
-  //ºòÑ¡µãÔÆÖĞµÄÃ¿Ò»¸öµã ½«¸ÄµãÔÚ¸ñÕ¤µØÍ¼ÖĞÊÇ·ñ±»Õ¼ÓÃµÄ¸ÅÂÊÇóÆ½¾ù
+  float score = 0.f; //å¾—åˆ†
+  //å€™é€‰ç‚¹äº‘ä¸­çš„æ¯ä¸€ä¸ªç‚¹ å°†æ”¹ç‚¹åœ¨æ ¼æ …åœ°å›¾ä¸­æ˜¯å¦è¢«å ç”¨çš„æ¦‚ç‡æ±‚å¹³å‡
   for (const sensor::RangefinderPoint& point : transformed_point_cloud) {
-      // hybrid_grid.GetCellIndex(point.position) ½«Á¬ĞøµãÔÆ×ø±ê ×ª»¯ÎªÀëÉ¢¸ñÕ¤ĞòºÅ
+      // hybrid_grid.GetCellIndex(point.position) å°†è¿ç»­ç‚¹äº‘åæ ‡ è½¬åŒ–ä¸ºç¦»æ•£æ ¼æ …åºå·
     score +=
         hybrid_grid.GetProbability(hybrid_grid.GetCellIndex(point.position));
   }
-  score /= static_cast<float>(transformed_point_cloud.size()); //Æ½¾ùµÃ·Ö
+  score /= static_cast<float>(transformed_point_cloud.size()); //å¹³å‡å¾—åˆ†
   const float angle = transform::GetAngle(transform);
-  //¸ÅÂÊÈ¨ÖØ Î»×ËºÍ½Ç¶È±ä»»Ô½´ó µÃ·ÖÔ½µ×
+  //æ¦‚ç‡æƒé‡ ä½å§¿å’Œè§’åº¦å˜æ¢è¶Šå¤§ å¾—åˆ†è¶Šåº•
   score *=
       std::exp(-common::Pow2(transform.translation().norm() *
                                  options_.translation_delta_cost_weight() +

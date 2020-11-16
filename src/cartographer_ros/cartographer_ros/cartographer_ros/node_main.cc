@@ -21,7 +21,7 @@
 #include "cartographer_ros/ros_log_sink.h"
 #include "gflags/gflags.h"
 #include "tf2_ros/transform_listener.h"
-// ¶¨Òå¼¸¸östring±äÁ¿£¬µÚ¶ş¸ö²ÎÊıÊÇ³õÊ¼Öµ, ºóÃæ¸ù¾İÊäÈë¸³¾ßÌåÖµ
+// å®šä¹‰å‡ ä¸ªstringå˜é‡ï¼Œç¬¬äºŒä¸ªå‚æ•°æ˜¯åˆå§‹å€¼, åé¢æ ¹æ®è¾“å…¥èµ‹å…·ä½“å€¼
 DEFINE_bool(collect_metrics, false,
             "Activates the collection of runtime metrics. If activated, the "
             "metrics can be accessed via a ROS service.");
@@ -49,22 +49,22 @@ namespace {
 
 void Run() {
   constexpr double kTfBufferCacheTimeInSeconds = 10.;
-  tf2_ros::Buffer tf_buffer{::ros::Duration(kTfBufferCacheTimeInSeconds)}; //ÉèÖÃtf»º´æÊ±¼ä
-  tf2_ros::TransformListener tf(tf_buffer); // tf¼àÌıÆ÷
+  tf2_ros::Buffer tf_buffer{::ros::Duration(kTfBufferCacheTimeInSeconds)}; //è®¾ç½®tfç¼“å­˜æ—¶é—´
+  tf2_ros::TransformListener tf(tf_buffer); // tfç›‘å¬å™¨
   NodeOptions node_options;
   TrajectoryOptions trajectory_options;
     /**
-     * @brief LoadOptionsÔÚnode_Options.ccÖĞÊµÏÖ£¬
-     * @brief Êµ¼Ê·Ö±ğµ÷ÓÃÁËnode_optionsºÍ trajectory_optionsµÄcreateº¯Êı£¬·µ»ØÒ»¸öoptions
-     * @brief ½« LoadOptions »ñÈ¡µ½µÄ²ÎÊıÖµ·Ö±ğ¸³¸ø node_options ºÍ trajectory_options
-     * @brief Ö»ÄÜ½ÓÊÕÔª×éµÄ¸³Öµ
+     * @brief LoadOptionsåœ¨node_Options.ccä¸­å®ç°ï¼Œ
+     * @brief å®é™…åˆ†åˆ«è°ƒç”¨äº†node_optionså’Œ trajectory_optionsçš„createå‡½æ•°ï¼Œè¿”å›ä¸€ä¸ªoptions
+     * @brief å°† LoadOptions è·å–åˆ°çš„å‚æ•°å€¼åˆ†åˆ«èµ‹ç»™ node_options å’Œ trajectory_options
+     * @brief åªèƒ½æ¥æ”¶å…ƒç»„çš„èµ‹å€¼
      */
   std::tie(node_options, trajectory_options) =
       LoadOptions(FLAGS_configuration_directory, FLAGS_configuration_basename);
 
   auto map_builder = absl::make_unique<cartographer::mapping::MapBuilder>(
       node_options.map_builder_options);
-  // ÕâÀïÓÃmapping::MapBuilder×÷ÎªNode¹¹Ôìº¯ÊıµÄ²ÎÊı,¶¨ÒåÀïÊÇmapping::MapBuilderInterface
+  // è¿™é‡Œç”¨mapping::MapBuilderä½œä¸ºNodeæ„é€ å‡½æ•°çš„å‚æ•°,å®šä¹‰é‡Œæ˜¯mapping::MapBuilderInterface
   Node node(node_options, std::move(map_builder), &tf_buffer,
             FLAGS_collect_metrics);
   if (!FLAGS_load_state_filename.empty()) {
@@ -91,7 +91,7 @@ void Run() {
 
 int main(int argc, char** argv) {
     /**
-     * @brief ¶¨ÒåÃüÁîĞĞÆô¶¯³ÌĞòµÄ²ÎÊıÉèÖÃ
+     * @brief å®šä¹‰å‘½ä»¤è¡Œå¯åŠ¨ç¨‹åºçš„å‚æ•°è®¾ç½®
      */
   google::InitGoogleLogging(argv[0]);
   google::ParseCommandLineFlags(&argc, &argv, true);
@@ -100,10 +100,10 @@ int main(int argc, char** argv) {
       << "-configuration_directory is missing.";
   CHECK(!FLAGS_configuration_basename.empty())
       << "-configuration_basename is missing.";
-  // cartographer_rosÊÇ¸öpackage,°üº¬¶à¸ö½Úµãnode,Ê×ÏÈ³õÊ¼»¯cartographer_node
+  // cartographer_rosæ˜¯ä¸ªpackage,åŒ…å«å¤šä¸ªèŠ‚ç‚¹node,é¦–å…ˆåˆå§‹åŒ–cartographer_node
   ::ros::init(argc, argv, "cartographer_node");
   ::ros::start();
-  // ´òÓ¡ÈÕÖ¾Ïà¹Ø
+  // æ‰“å°æ—¥å¿—ç›¸å…³
   cartographer_ros::ScopedRosLogSink ros_log_sink;
   cartographer_ros::Run();
   ::ros::shutdown();
