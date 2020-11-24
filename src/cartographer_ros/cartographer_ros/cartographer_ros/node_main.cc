@@ -78,7 +78,8 @@ void Run() {
   ::ros::spin();
 
   node.FinishAllTrajectories();
-  node.RunFinalOptimization();
+  node.RunFinalOptimization();//在你的轨迹结束生成后,进行最后一次全局优化,使轨迹更光滑
+                              //由max_num_final_iterations参数配置最后的优化次数,可以设置得比较大
 
   if (!FLAGS_save_state_filename.empty()) {
     node.SerializeState(FLAGS_save_state_filename,

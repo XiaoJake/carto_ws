@@ -103,9 +103,8 @@ proto::MapBuilderOptions CreateMapBuilderOptions(
 MapBuilder::MapBuilder(const proto::MapBuilderOptions& options)
     : options_(options), thread_pool_(options.num_background_threads()) {
   CHECK(options.use_trajectory_builder_2d() ^
-        options.use_trajectory_builder_3d());
+        options.use_trajectory_builder_3d());//用 异或^符号 来确保2d和3d建图的开关我们只开启了其中一种
   //2d建图，初始化智能指针pose_graph_
-  // ? options_.pose_graph_options() 该参数指的是什么
   if (options.use_trajectory_builder_2d()) {
     pose_graph_ = absl::make_unique<PoseGraph2D>(
         options_.pose_graph_options(),

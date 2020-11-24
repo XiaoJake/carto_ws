@@ -33,10 +33,10 @@ PointCloud TransformPointCloud(const PointCloud& point_cloud,
   //预留点云大小的空间
   result.reserve(point_cloud.size());
   for (const RangefinderPoint& point : point_cloud) {
-    //将转换后的点云压入容器
+    //将原始点云按照transform转换矩阵进行旋转平移后,把点云压入容器
     result.emplace_back(transform * point);
   }
-  //返回新的点云数据
+  //返回新的经过位姿转换后的点云数据
   return result;
 }
 /**
@@ -65,7 +65,7 @@ PointCloud CropPointCloud(const PointCloud& point_cloud, const float min_z,
                           const float max_z) {
   PointCloud cropped_point_cloud;
   for (const RangefinderPoint& point : point_cloud) {
-    if (min_z <= point.position.z() && point.position.z() <= max_z) {
+    if (min_z <= point.position.z() && point.position.z() <= max_z) {//只保留位于min_z~max_z截出的两个水平面之内的点云
       cropped_point_cloud.push_back(point);
     }
   }

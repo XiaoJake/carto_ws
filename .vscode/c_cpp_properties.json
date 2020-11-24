@@ -11,9 +11,10 @@
                 "/home/xiaojake/carto_ws/src/cartographer_ros/**",
                 "/home/xiaojake/carto_ws/src/cartographer_ros/cartographer_ros/**",
                 "/home/xiaojake/carto_ws/src/cartographer_ros/cartographer_ros/cartographer_ros/**",
-                "/home/xiaojake/others_ws/src/map_server/include/**",
                 "/usr/include/**",
-                "/opt/ros/melodic/include/**"
+                "/opt/ros/kinetic/include/**",
+                "${workspaceFolder}/src/cartographer",
+                "/usr/include/eigen3"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",

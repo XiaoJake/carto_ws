@@ -268,7 +268,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
 
   const auto scan_matcher_start = std::chrono::steady_clock::now();
 
-  ///高分辨率进行适应体素滤波器
+  ///近处高分辨率地图进行自适应体素滤波器
   sensor::AdaptiveVoxelFilter adaptive_voxel_filter(
       options_.high_resolution_adaptive_voxel_filter_options());
   const sensor::PointCloud high_resolution_point_cloud_in_tracking =
@@ -277,7 +277,7 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     LOG(WARNING) << "Dropped empty high resolution point cloud data.";
     return nullptr;
   }
-  ///低分辨率进行适应体素滤波器
+  ///远处低分辨率地图进行自适应体素滤波器
   sensor::AdaptiveVoxelFilter low_resolution_adaptive_voxel_filter(
       options_.low_resolution_adaptive_voxel_filter_options());
   const sensor::PointCloud low_resolution_point_cloud_in_tracking = ///满足最小点数量的当前帧低分辨率点云
