@@ -133,7 +133,10 @@ std::unique_ptr<carto::sensor::ImuData> SensorBridge::ToImuData(
   if (sensor_to_tracking == nullptr) {
     return nullptr;
   }
-  CHECK(sensor_to_tracking->translation().norm() < 1e-5)
+  // imu_link与base_link无法做到重合安装。
+  // 这样即使使用了imu,只要imu与base的直线距离不超过1米远,tracking_frame就可以设置为其它link.而不一定是imu_link
+  CHECK(sensor_to_tracking->translation().norm() < 1)
+  //CHECK(sensor_to_tracking->translation().norm() < 1e-5)
       << "The IMU frame must be colocated with the tracking frame. "
          "Transforming linear acceleration into the tracking frame will "
          "otherwise be imprecise.";

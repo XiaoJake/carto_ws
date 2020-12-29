@@ -263,7 +263,11 @@ LocalTrajectoryBuilder3D::AddAccumulatedRangeData(
     LOG(WARNING) << "Dropped empty range data.";
     return nullptr;
   }
-  const transform::Rigid3d pose_prediction = ///当前位姿
+  ///由(结合了odom,imu的)推进器估算出的当前位姿,根据参数use_online_correlative_scan_matching的不同,有以下两种作用:
+  ///1)false:会直接作为 ceres_scan_matcher_ 的先验位姿 
+  ///2)true:会先作为 real_time_correlative_scan_matcher_ 的先验位姿,
+  ///  然后 real_time_correlative_scan_matcher_ 匹配出的位姿initial_ceres_pose才作为 ceres_scan_matcher_ 的先验位姿 
+  const transform::Rigid3d pose_prediction = 
       extrapolator_->ExtrapolatePose(time);
 
   const auto scan_matcher_start = std::chrono::steady_clock::now();
